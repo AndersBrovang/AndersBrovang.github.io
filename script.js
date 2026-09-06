@@ -1,6 +1,6 @@
 // ---------------------------------------------------------------
 // EDIT THIS DATA to make the site yours. Everything below renders
-// straight from these three arrays plus the hero/about text in
+// straight from these arrays plus the letterhead/summary text in
 // index.html.
 // ---------------------------------------------------------------
 
@@ -9,15 +9,9 @@ const SKILLS = [
   { name: "Excel", level: 85, note: "formulas, pivot tables, audits" },
   { name: "Data analysis", level: 70, note: "reconciliation, QA checks" },
   { name: "SQL", level: 35, note: "learning" },
-  { name: "Power BI", level: 40, note: "basic dashboards" },
 ];
 
-const TIMELINE = [
-  {
-    period: "2025 — 2028",
-    title: "BSc Computer Science & Economics",
-    desc: "University of Copenhagen.",
-  },
+const EXPERIENCE = [
   {
     period: "2025 — present",
     title: "Student Assistant, Data & Logistics",
@@ -30,14 +24,15 @@ const TIMELINE = [
   },
 ];
 
-const PROJECTS = [
+const EDUCATION = [
   {
-    title: "Sterile tray reconciliation tool",
-    tag: "Python",
-    desc: "A script that compares two versions of a hospital inventory spreadsheet — old and rebuilt — matches items by product number, and flags mismatched tray counts before the new sheet goes live.",
-    link: "#",
-    linkLabel: "View on GitHub",
+    period: "2025 — 2028",
+    title: "BSc Computer Science & Economics",
+    desc: "University of Copenhagen.",
   },
+];
+
+const PROJECTS = [
   {
     title: "Financial Modelling Dashboard",
     tag: "Streamlit",
@@ -70,12 +65,12 @@ function renderSkills() {
   ).join("");
 }
 
-function renderTimeline() {
-  const list = document.getElementById("timeline");
-  list.innerHTML = TIMELINE.map(
-    (t, i) => `
+function renderTimelineList(items, elementId) {
+  const list = document.getElementById(elementId);
+  list.innerHTML = items.map(
+    (t) => `
     <li class="timeline__item reveal">
-      <span class="timeline__marker mono">${i + 1}</span>
+      <span class="timeline__marker"></span>
       <span class="timeline__period mono">${t.period}</span>
       <h3 class="timeline__title">${t.title}</h3>
       <p class="timeline__desc">${t.desc}</p>
@@ -125,7 +120,7 @@ function initTheme() {
 }
 
 // ---------------------------------------------------------------
-// Scroll-triggered reveals (timeline, projects, skill bars)
+// Scroll-triggered reveals (timeline, projects, skill rows)
 // ---------------------------------------------------------------
 
 function initReveals() {
@@ -135,11 +130,6 @@ function initReveals() {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
           entry.target.classList.add("is-visible");
-          const level = entry.target.getAttribute("data-level");
-          if (level) {
-            const fill = entry.target.querySelector(".skill__fill");
-            if (fill) fill.style.width = level + "%";
-          }
           observer.unobserve(entry.target);
         }
       });
@@ -150,12 +140,20 @@ function initReveals() {
 }
 
 // ---------------------------------------------------------------
-// Hero stamp landing animation (once, on load)
+// Skill bar fill — runs once on load so it never depends on
+// scrolling a row into view first.
 // ---------------------------------------------------------------
 
-function initStamp() {
-  const stamp = document.querySelector(".stamp-svg");
-  requestAnimationFrame(() => stamp.classList.add("stamp-in"));
+function initSkillFills() {
+  const fills = document.querySelectorAll(".skill__fill");
+  requestAnimationFrame(() => {
+    requestAnimationFrame(() => {
+      fills.forEach((fill) => {
+        const level = fill.closest(".skill__row").getAttribute("data-level");
+        fill.style.width = level + "%";
+      });
+    });
+  });
 }
 
 // ---------------------------------------------------------------
@@ -164,17 +162,21 @@ function initStamp() {
 
 function initFooterDate() {
   const el = document.getElementById("last-updated");
-  el.textContent = new Date().toISOString().slice(0, 10);
+  const now = new Date();
+  const dd = String(now.getDate()).padStart(2, "0");
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  el.textContent = `${dd}/${mm}/${now.getFullYear()}`;
 }
 
 // ---------------------------------------------------------------
 
 document.addEventListener("DOMContentLoaded", () => {
   renderSkills();
-  renderTimeline();
+  renderTimelineList(EXPERIENCE, "experience-list");
+  renderTimelineList(EDUCATION, "education-list");
   renderProjects();
   initTheme();
   initReveals();
-  initStamp();
+  initSkillFills();
   initFooterDate();
 });
