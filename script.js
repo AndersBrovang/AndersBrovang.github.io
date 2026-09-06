@@ -32,7 +32,7 @@ const EDUCATION = [
   {
     period: "2022 to 2025",
     title: "Biology, Mathematics & Business Economics",
-    desc: "Frederiksborg Gymnasium og HF.",
+    desc: '<span lang="da">Frederiksborg Gymnasium og HF</span>.',
   },
 ];
 
@@ -105,26 +105,41 @@ function renderProjects() {
 // Theme toggle (persists via localStorage)
 // ---------------------------------------------------------------
 
+// The theme itself is applied by the inline script in <head> so there
+// is no flash of the wrong theme on load. This only wires the button.
 function initTheme() {
   const root = document.documentElement;
   const toggle = document.getElementById("theme-toggle");
-  const stored = localStorage.getItem("theme");
-  const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-  const initial = stored || (prefersDark ? "dark" : "light");
+  if (!toggle) return;
 
-  root.setAttribute("data-theme", initial);
-  toggle.setAttribute("aria-pressed", String(initial === "dark"));
+  const syncLabel = (theme) => {
+    toggle.setAttribute("aria-pressed", String(theme === "dark"));
+    toggle.setAttribute(
+      "aria-label",
+      theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+    );
+  };
+
+  syncLabel(root.getAttribute("data-theme"));
 
   toggle.addEventListener("click", () => {
     const next = root.getAttribute("data-theme") === "dark" ? "light" : "dark";
     root.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
-    toggle.setAttribute("aria-pressed", String(next === "dark"));
-    toggle.setAttribute(
-      "aria-label",
-      next === "dark" ? "Switch to light mode" : "Switch to dark mode"
-    );
+    try {
+      localStorage.setItem("theme", next);
+    } catch (e) {}
+    syncLabel(next);
   });
+}
+
+// ---------------------------------------------------------------
+// Print / save as PDF
+// ---------------------------------------------------------------
+
+function initPrint() {
+  const button = document.getElementById("print-cv");
+  if (!button) return;
+  button.addEventListener("click", () => window.print());
 }
 
 // ---------------------------------------------------------------
@@ -184,6 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTimelineList(EDUCATION, "education-list");
   renderProjects();
   initTheme();
+  initPrint();
   initReveals();
   initSkillFills();
   initFooterDate();
