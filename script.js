@@ -29,13 +29,39 @@ const EDUCATION = [
     title: "BSc Computer Science & Economics",
     desc: "University of Copenhagen.",
     coursesLabel: "Selected coursework",
+    // Titles are the English equivalents of the Danish course names;
+    // each link goes to the KU course description.
     courses: [
-      { name: "Programming and Problem Solving" },
-      { name: "Discrete Mathematics and Algorithms" },
-      { name: "Linear Algebra" },
-      { name: "Microeconomics A" },
-      { name: "Econometrics A", inProgress: true },
-      { name: "Numerical Methods", inProgress: true },
+      {
+        name: "Programming and Problem Solving",
+        url: "https://kurser.ku.dk/course/ndab15009u/2025-2026",
+      },
+      {
+        name: "Discrete Mathematics and Algorithms",
+        url: "https://kurser.ku.dk/course/ndab23002u/2025-2026",
+      },
+      {
+        name: "Linear Algebra",
+        url: "https://kurser.ku.dk/course/nmab15002u/2025-2026",
+      },
+      {
+        name: "Basic Statistics and Probability Theory",
+        url: "https://kurser.ku.dk/course/ndab19003u/2025-2026",
+      },
+      {
+        name: "Microeconomics A",
+        url: "https://kurser.ku.dk/course/ndab19004u/2025-2026",
+      },
+      {
+        name: "Econometrics A",
+        url: "https://kurser.ku.dk/course/ndab20005u/2026-2027",
+        inProgress: true,
+      },
+      {
+        name: "Numerical Methods",
+        url: "https://kurser.ku.dk/course/ndab22009u/2026-2027",
+        inProgress: true,
+      },
     ],
   },
   {
