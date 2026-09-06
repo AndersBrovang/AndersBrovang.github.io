@@ -336,6 +336,88 @@ a:hover{ text-decoration-color: currentColor; }
 .project__link{ display: inline-block; margin-top: 12px; font-size: 0.88rem; text-decoration: underline; text-decoration-color: var(--line); text-underline-offset: 3px; }
 .project__link:hover{ text-decoration-color: currentColor; }
 
+/* ---------- Live DCF model ---------- */
+.model__lede{
+  color: var(--ink-soft);
+  margin: 0 0 24px;
+  max-width: 62ch;
+  font-size: 0.92rem;
+}
+.model{
+  display: grid;
+  grid-template-columns: 220px 1fr;
+  gap: 28px;
+  align-items: start;
+}
+.model__controls{ display: flex; flex-direction: column; gap: 16px; }
+.model__field{ display: flex; flex-direction: column; gap: 6px; cursor: pointer; }
+.model__label{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+.model__value{ font-size: 0.78rem; color: var(--ink); }
+.model__field input[type="range"]{
+  width: 100%;
+  margin: 0;
+  accent-color: var(--accent);
+  cursor: pointer;
+}
+.model__field input[type="range"]:focus-visible{
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.model__figure{ margin: 0; }
+.model__chart{ width: 100%; height: auto; display: block; overflow: visible; }
+.model__bar-nominal{ fill: var(--line); }
+.model__bar-value{ fill: var(--accent); }
+.model__baseline{ stroke: var(--line); stroke-width: 1; }
+.model__axis{
+  fill: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 7px;
+}
+.model__result{
+  margin-top: 14px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+.model__result-label{ font-size: 0.78rem; color: var(--ink-soft); }
+.model__npv{ font-size: 1.05rem; font-weight: 500; color: var(--accent); }
+
+/* ---------- 404 ---------- */
+.notfound{
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 620px;
+}
+.notfound__code{
+  font-size: 0.78rem;
+  letter-spacing: 0.14em;
+  color: var(--accent);
+  margin: 0 0 14px;
+}
+.notfound__title{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.6rem, 4vw, 2.2rem);
+  line-height: 1.15;
+  margin: 0 0 16px;
+}
+.notfound__body{ color: var(--ink-soft); margin: 0 0 24px; max-width: 48ch; }
+.notfound__link{ font-size: 0.92rem; }
+
 /* ---------- Footer ---------- */
 .cv-footer{
   margin-top: 64px;
@@ -355,6 +437,7 @@ a:hover{ text-decoration-color: currentColor; }
   .cv-sidebar{ padding-right: 0; padding-bottom: 40px; margin-bottom: 40px; border-bottom: 1px solid var(--line); }
   .cv-main{ padding-left: 0; border-left: none; }
   .project::before{ left: -24px; }
+  .model{ grid-template-columns: 1fr; gap: 22px; }
 }
 
 @media (max-width: 560px){
@@ -384,8 +467,9 @@ a:hover{ text-decoration-color: currentColor; }
   body{ background: #fff; font-size: 10.5pt; line-height: 1.45; }
   .cv{ max-width: none; padding: 0; }
 
-  /* Screen-only affordances. */
-  .utility, .skip-link{ display: none !important; }
+  /* Screen-only affordances. An interactive model means nothing on
+     paper, so it does not get printed. */
+  .utility, .skip-link, #model{ display: none !important; }
 
   /* Scroll-reveal items must never print blank, whether or not the
      reader scrolled them into view first. */

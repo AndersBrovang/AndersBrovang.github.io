@@ -187,6 +187,111 @@ function initSkillFills() {
 }
 
 // ---------------------------------------------------------------
+// Live DCF model
+//
+// Same discounting maths as the Financial Modelling Dashboard:
+// each year's cash flow grows at `growth`, then gets discounted back
+// to today at `discount`. Drawn as an inline SVG, no chart library.
+// ---------------------------------------------------------------
+
+const kr = new Intl.NumberFormat("en-GB", { maximumFractionDigits: 0 });
+
+function computeDcf({ cashFlow, growth, discount, years }) {
+  const rows = [];
+  let presentValue = 0;
+
+  for (let year = 1; year <= years; year++) {
+    const nominal = cashFlow * Math.pow(1 + growth / 100, year - 1);
+    const discounted = nominal / Math.pow(1 + discount / 100, year);
+    presentValue += discounted;
+    rows.push({ year, nominal, discounted });
+  }
+
+  return { rows, presentValue };
+}
+
+function dcfChartMarkup(rows) {
+  const width = 320;
+  const height = 116;
+  const baseline = height - 16; // leave room for the year labels
+  const top = 6;
+  const peak = Math.max(...rows.map((r) => r.nominal));
+  const slot = width / rows.length;
+  const nominalWidth = Math.min(slot * 0.62, 30);
+  const valueWidth = nominalWidth * 0.56;
+
+  const scale = (value) => ((value / peak) * (baseline - top)) || 0;
+
+  return rows
+    .map((row) => {
+      const centre = slot * (row.year - 0.5);
+      const nominalHeight = scale(row.nominal);
+      const valueHeight = scale(row.discounted);
+
+      return `
+        <rect class="model__bar-nominal"
+              x="${(centre - nominalWidth / 2).toFixed(2)}"
+              y="${(baseline - nominalHeight).toFixed(2)}"
+              width="${nominalWidth.toFixed(2)}"
+              height="${nominalHeight.toFixed(2)}" rx="1.5"/>
+        <rect class="model__bar-value"
+              x="${(centre - valueWidth / 2).toFixed(2)}"
+              y="${(baseline - valueHeight).toFixed(2)}"
+              width="${valueWidth.toFixed(2)}"
+              height="${valueHeight.toFixed(2)}" rx="1.5"/>
+        <text class="model__axis" x="${centre.toFixed(2)}" y="${height - 4}"
+              text-anchor="middle">${row.year}</text>`;
+    })
+    .join("") +
+    `<line class="model__baseline" x1="0" y1="${baseline}" x2="${width}" y2="${baseline}"/>`;
+}
+
+function initModel() {
+  const chart = document.getElementById("model-chart");
+  if (!chart) return;
+
+  const inputs = {
+    cashFlow: document.getElementById("in-cf"),
+    growth: document.getElementById("in-growth"),
+    discount: document.getElementById("in-discount"),
+    years: document.getElementById("in-years"),
+  };
+  const outputs = {
+    cashFlow: document.getElementById("out-cf"),
+    growth: document.getElementById("out-growth"),
+    discount: document.getElementById("out-discount"),
+    years: document.getElementById("out-years"),
+    total: document.getElementById("out-npv"),
+    label: document.getElementById("model-result-label"),
+  };
+
+  function update() {
+    const assumptions = {
+      cashFlow: Number(inputs.cashFlow.value),
+      growth: Number(inputs.growth.value),
+      discount: Number(inputs.discount.value),
+      years: Number(inputs.years.value),
+    };
+
+    outputs.cashFlow.textContent = "DKK " + kr.format(assumptions.cashFlow);
+    outputs.growth.textContent = assumptions.growth + "%";
+    outputs.discount.textContent = assumptions.discount + "%";
+    outputs.years.textContent = assumptions.years;
+
+    const { rows, presentValue } = computeDcf(assumptions);
+    chart.innerHTML = dcfChartMarkup(rows);
+    outputs.label.textContent =
+      "Present value of " + assumptions.years + " years of cash flow";
+    outputs.total.textContent = "DKK " + kr.format(presentValue);
+  }
+
+  Object.values(inputs).forEach((input) =>
+    input.addEventListener("input", update)
+  );
+  update();
+}
+
+// ---------------------------------------------------------------
 // Footer date
 // ---------------------------------------------------------------
 
@@ -209,5 +314,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initPrint();
   initReveals();
   initSkillFills();
+  initModel();
   initFooterDate();
 });
