@@ -6,6 +6,7 @@
   --ink-soft: #5C6B64;
   --accent: #1F6F5C;
   --accent-alt: #B4432B;
+  --accent-wash: rgba(31, 111, 92, 0.07);
   --line: #DDE2DD;
   --radius: 3px;
   --font-display: "Fraunces", serif;
@@ -20,6 +21,7 @@
   --ink-soft: #8FA098;
   --accent: #49B092;
   --accent-alt: #E2694F;
+  --accent-wash: rgba(73, 176, 146, 0.13);
   --line: #26302A;
 }
 
@@ -311,12 +313,35 @@ a:hover{ text-decoration-color: currentColor; }
   flex-wrap: wrap;
   gap: 7px;
 }
+.courses__list li{ display: flex; }
 .course{
+  display: inline-flex;
+  align-items: baseline;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 3px 9px;
   font-size: 0.76rem;
   color: var(--ink-soft);
+  text-decoration: none;
+  transition: border-color 0.2s ease, color 0.2s ease,
+              background-color 0.2s ease, transform 0.2s ease;
+}
+/* Everything responds to the cursor, but only a chip that actually
+   goes somewhere lights up in the accent colour. */
+.course:hover{
+  border-color: var(--ink-soft);
+  color: var(--ink);
+  background: var(--paper-alt);
+  transform: translateY(-1px);
+}
+.course--link:hover{
+  border-color: var(--accent);
+  color: var(--accent);
+  background: var(--accent-wash);
+}
+.course--link:focus-visible{
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
 }
 .course--in-progress{ border-style: dashed; }
 .course__note{
@@ -411,6 +436,13 @@ a:hover{ text-decoration-color: currentColor; }
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 2px 8px;
+  transition: border-color 0.2s ease, background-color 0.2s ease,
+              transform 0.2s ease;
+}
+.project__stack li:hover{
+  border-color: var(--accent);
+  background: var(--accent-wash);
+  transform: translateY(-1px);
 }
 .project__points{
   list-style: none;
