@@ -35,7 +35,7 @@ const EDUCATION = [
       { name: "Linear Algebra" },
       { name: "Microeconomics A" },
       { name: "Econometrics A", inProgress: true },
-      { name: "Numerical Methods and Analysis", inProgress: true },
+      { name: "Numerical Methods", inProgress: true },
     ],
   },
   {
@@ -115,12 +115,20 @@ function renderSkills() {
 
 function courseListMarkup(item) {
   const chips = item.courses
-    .map(
-      (c) => `
-      <li class="course${c.inProgress ? " course--in-progress" : ""}">
-        ${c.name}${c.inProgress ? '<span class="course__note">in progress</span>' : ""}
-      </li>`
-    )
+    .map((c) => {
+      // Add a `url` to a course to turn its chip into a real link.
+      const classes =
+        "course" +
+        (c.inProgress ? " course--in-progress" : "") +
+        (c.url ? " course--link" : "");
+      const inner =
+        c.name +
+        (c.inProgress ? '<span class="course__note">in progress</span>' : "");
+
+      return c.url
+        ? `<li><a class="${classes}" href="${c.url}" target="_blank" rel="noopener">${inner}</a></li>`
+        : `<li><span class="${classes}">${inner}</span></li>`;
+    })
     .join("");
 
   return `
