@@ -78,13 +78,12 @@ a:hover{ text-decoration-color: currentColor; }
 /* ---------- Letterhead ---------- */
 .cv-header{
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 32px;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
   padding-bottom: 44px;
   margin-bottom: 56px;
   border-bottom: 1px solid var(--line);
-  position: relative;
 }
 .cv-name{
   font-family: var(--font-display);
@@ -105,6 +104,7 @@ a:hover{ text-decoration-color: currentColor; }
   padding: 0;
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 8px 26px;
   font-size: 0.88rem;
 }
@@ -117,39 +117,6 @@ a:hover{ text-decoration-color: currentColor; }
   color: var(--ink-soft);
   margin: 0;
   font-style: italic;
-}
-
-.cv-stamp{
-  flex-shrink: 0;
-  color: var(--accent-alt);
-  margin-top: -6px;
-  margin-bottom: -66px;
-}
-.stamp-svg{
-  width: 118px;
-  height: 118px;
-  transform: rotate(-8deg) scale(0.6);
-  opacity: 0;
-}
-.stamp-svg.stamp-in{
-  animation: stamp-down 0.6s cubic-bezier(.2,.9,.3,1.2) 0.3s forwards;
-}
-@keyframes stamp-down{
-  0%{ transform: rotate(-8deg) scale(1.6); opacity: 0; }
-  60%{ opacity: 1; }
-  100%{ transform: rotate(-8deg) scale(1); opacity: 1; }
-}
-.stamp-text-main{
-  font-family: var(--font-mono);
-  font-size: 17px;
-  letter-spacing: 0.05em;
-  fill: currentColor;
-}
-.stamp-text-sub{
-  font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.07em;
-  fill: currentColor;
 }
 
 /* ---------- Body grid: sidebar + main ---------- */
@@ -254,8 +221,6 @@ a:hover{ text-decoration-color: currentColor; }
   height: 8px;
   border-radius: 50%;
   background: var(--accent);
-  font-size: 0;
-  color: transparent;
 }
 .timeline__period{
   font-family: var(--font-mono);
@@ -315,8 +280,11 @@ a:hover{ text-decoration-color: currentColor; }
   border-top: 1px solid var(--line);
   color: var(--ink-soft);
   font-size: 0.8rem;
+  text-align: center;
 }
 .cv-footer p{ margin: 0; }
+.cv-footer a{ color: var(--ink-soft); text-decoration-color: var(--line); }
+.cv-footer a:hover{ color: var(--accent); text-decoration-color: currentColor; }
 
 /* ---------- Responsive ---------- */
 @media (max-width: 780px){
@@ -328,9 +296,6 @@ a:hover{ text-decoration-color: currentColor; }
 
 @media (max-width: 560px){
   .cv{ padding: 64px 20px 48px; }
-  .cv-header{ flex-direction: column-reverse; gap: 20px; }
-  .cv-stamp{ align-self: flex-end; margin-bottom: -34px; }
-  .stamp-svg{ width: 84px; height: 84px; }
   .theme-toggle{ top: 14px; right: 14px; }
   .project::before{ left: -20px; }
 }
