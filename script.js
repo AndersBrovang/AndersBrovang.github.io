@@ -356,49 +356,198 @@ function dcfChartMarkup(rows) {
     `<line class="model__baseline" x1="0" y1="${baseline}" x2="${width}" y2="${baseline}"/>`;
 }
 
+// Seeded generator, so nudging a slider widens or narrows the same
+// fan instead of reshuffling every path. "Resample" draws a new seed.
+function mulberry32(seed) {
+  return function () {
+    seed |= 0;
+    seed = (seed + 0x6d2b79f5) | 0;
+    let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
+// Box-Muller: two uniforms in, one normal draw out.
+function normalDraw(random, mean, sd) {
+  let u = 0;
+  let v = 0;
+  while (u === 0) u = random();
+  while (v === 0) v = random();
+  return mean + sd * Math.sqrt(-2 * Math.log(u)) * Math.cos(2 * Math.PI * v);
+}
+
+function simulateDcf(assumptions, volatility, runs, seed) {
+  const { cashFlow, growth, discount, years } = assumptions;
+  const random = mulberry32(seed);
+  const rate = 1 + discount / 100;
+  const paths = [];
+  const values = [];
+
+  for (let run = 0; run < runs; run++) {
+    const path = [cashFlow];
+    let presentValue = cashFlow / rate;
+
+    for (let year = 2; year <= years; year++) {
+      const drawn = normalDraw(random, growth, volatility) / 100;
+      // A year can wipe out most of the cash flow, but not flip its sign.
+      const next = path[path.length - 1] * (1 + Math.max(drawn, -0.95));
+      path.push(next);
+      presentValue += next / Math.pow(rate, year);
+    }
+
+    paths.push(path);
+    values.push(presentValue);
+  }
+
+  return { paths, values };
+}
+
+function percentile(sorted, p) {
+  if (!sorted.length) return 0;
+  const index = Math.min(
+    sorted.length - 1,
+    Math.max(0, Math.round((p / 100) * (sorted.length - 1)))
+  );
+  return sorted[index];
+}
+
+function simChartMarkup(paths, values, years) {
+  const width = 640;
+  const height = 190;
+  const baseline = height - 18;
+  const top = 8;
+
+  // Scale to the 95th percentile of all plotted points so a couple of
+  // runaway paths cannot flatten everything else into the floor.
+  const allPoints = paths.flat().sort((a, b) => a - b);
+  const ceiling = percentile(allPoints, 95) || 1;
+  const stepX = years > 1 ? width / (years - 1) : width;
+  const toY = (value) =>
+    baseline - Math.min(value / ceiling, 1.08) * (baseline - top);
+
+  const pointsFor = (path) =>
+    path.map((v, i) => `${(i * stepX).toFixed(1)},${toY(v).toFixed(1)}`).join(" ");
+
+  // Statistics use every run; only a sample gets drawn, to keep the
+  // fan readable and the re-render cheap.
+  const drawLimit = 100;
+  const stride = Math.max(1, Math.ceil(paths.length / drawLimit));
+  let fan = "";
+  for (let i = 0; i < paths.length; i += stride) {
+    fan += `<polyline class="sim__path" points="${pointsFor(paths[i])}"/>`;
+  }
+
+  // Highlight a real path: the one whose present value is the median.
+  const ranked = values
+    .map((value, index) => ({ value, index }))
+    .sort((a, b) => a.value - b.value);
+  const medianPath = paths[ranked[Math.floor(ranked.length / 2)].index];
+
+  const axis = Array.from({ length: years }, (_, i) => {
+    const x = Math.min(Math.max(i * stepX, 8), width - 8);
+    return `<text class="sim__axis" x="${x.toFixed(1)}" y="${height - 4}"
+             text-anchor="middle">${i + 1}</text>`;
+  }).join("");
+
+  return `
+    <clipPath id="sim-clip"><rect x="0" y="0" width="${width}" height="${baseline}"/></clipPath>
+    <g clip-path="url(#sim-clip)">
+      ${fan}
+      <polyline class="sim__median" points="${pointsFor(medianPath)}"/>
+    </g>
+    <line class="sim__baseline" x1="0" y1="${baseline}" x2="${width}" y2="${baseline}"/>
+    ${axis}`;
+}
+
 function initModel() {
   const chart = document.getElementById("model-chart");
   if (!chart) return;
+
+  const simChart = document.getElementById("sim-chart");
 
   const inputs = {
     cashFlow: document.getElementById("in-cf"),
     growth: document.getElementById("in-growth"),
     discount: document.getElementById("in-discount"),
     years: document.getElementById("in-years"),
+    volatility: document.getElementById("in-vol"),
+    runs: document.getElementById("in-runs"),
   };
   const outputs = {
     cashFlow: document.getElementById("out-cf"),
     growth: document.getElementById("out-growth"),
     discount: document.getElementById("out-discount"),
     years: document.getElementById("out-years"),
+    volatility: document.getElementById("out-vol"),
+    runs: document.getElementById("out-runs"),
     total: document.getElementById("out-npv"),
     label: document.getElementById("model-result-label"),
+    p10: document.getElementById("sim-p10"),
+    p50: document.getElementById("sim-p50"),
+    p90: document.getElementById("sim-p90"),
   };
 
-  function update() {
+  let seed = 20260906;
+  let queued = false;
+
+  function render() {
     const assumptions = {
       cashFlow: Number(inputs.cashFlow.value),
       growth: Number(inputs.growth.value),
       discount: Number(inputs.discount.value),
       years: Number(inputs.years.value),
     };
+    const volatility = Number(inputs.volatility.value);
+    const runs = Number(inputs.runs.value);
 
     outputs.cashFlow.textContent = "DKK " + kr.format(assumptions.cashFlow);
     outputs.growth.textContent = assumptions.growth + "%";
     outputs.discount.textContent = assumptions.discount + "%";
     outputs.years.textContent = assumptions.years;
+    outputs.volatility.textContent = "±" + volatility + "%";
+    outputs.runs.textContent = kr.format(runs);
 
+    // Deterministic view.
     const { rows, presentValue } = computeDcf(assumptions);
     chart.innerHTML = dcfChartMarkup(rows);
     outputs.label.textContent =
       "Present value of " + assumptions.years + " years of cash flow";
     outputs.total.textContent = "DKK " + kr.format(presentValue);
+
+    // Simulated view.
+    const { paths, values } = simulateDcf(assumptions, volatility, runs, seed);
+    simChart.innerHTML = simChartMarkup(paths, values, assumptions.years);
+
+    const sorted = values.slice().sort((a, b) => a - b);
+    outputs.p10.textContent = "DKK " + kr.format(percentile(sorted, 10));
+    outputs.p50.textContent = "DKK " + kr.format(percentile(sorted, 50));
+    outputs.p90.textContent = "DKK " + kr.format(percentile(sorted, 90));
+  }
+
+  // Dragging a slider fires continuously; only redraw once per frame.
+  function update() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      render();
+    });
   }
 
   Object.values(inputs).forEach((input) =>
     input.addEventListener("input", update)
   );
-  update();
+
+  const resample = document.getElementById("sim-resample");
+  if (resample) {
+    resample.addEventListener("click", () => {
+      seed = (Math.random() * 4294967296) >>> 0;
+      render();
+    });
+  }
+
+  render();
 }
 
 // ---------------------------------------------------------------

@@ -496,6 +496,68 @@ a:hover{ text-decoration-color: currentColor; }
 .model__result-label{ font-size: 0.78rem; color: var(--ink-soft); }
 .model__npv{ font-size: 1.05rem; font-weight: 500; color: var(--accent); }
 
+/* ---------- Monte Carlo ---------- */
+.sim{ margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--line); }
+.sim__title{
+  font-size: 0.98rem;
+  font-weight: 600;
+  margin: 0 0 8px;
+}
+.sim__lede{
+  color: var(--ink-soft);
+  margin: 0 0 22px;
+  max-width: 62ch;
+  font-size: 0.92rem;
+}
+.sim__controls{
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  flex-wrap: wrap;
+  margin-bottom: 22px;
+}
+.sim__field{ flex: 1 1 180px; max-width: 260px; }
+.sim__resample{
+  border: 1px solid var(--line);
+  background: none;
+  color: var(--ink-soft);
+  border-radius: var(--radius);
+  padding: 7px 14px;
+  font-family: var(--font-body);
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.sim__resample:hover{ border-color: var(--accent); color: var(--accent); }
+.sim__resample:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.sim__chart{ width: 100%; height: 190px; display: block; }
+.sim__path{ fill: none; stroke: var(--accent); stroke-opacity: 0.11; stroke-width: 1; }
+[data-theme="dark"] .sim__path{ stroke-opacity: 0.15; }
+.sim__median{ fill: none; stroke: var(--accent); stroke-width: 2; }
+.sim__baseline{ stroke: var(--line); stroke-width: 1; }
+.sim__axis{
+  fill: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 9px;
+}
+
+.sim__stats{
+  margin: 18px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+.sim__stat dt{
+  font-size: 0.72rem;
+  color: var(--ink-soft);
+  margin-bottom: 4px;
+}
+.sim__stat dd{ margin: 0; font-size: 0.92rem; }
+.sim__stat--median dd{ color: var(--accent); font-weight: 500; }
+
 /* ---------- 404 ---------- */
 .notfound{
   min-height: 70vh;
