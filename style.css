@@ -47,12 +47,31 @@ body{
 a{ color: var(--accent); text-decoration-color: var(--line); text-underline-offset: 3px; }
 a:hover{ text-decoration-color: currentColor; }
 
-/* ---------- Theme toggle ---------- */
-.theme-toggle{
+/* ---------- Skip link ---------- */
+.skip-link{
+  position: absolute;
+  left: -9999px;
+  top: 0;
+  z-index: 20;
+  background: var(--accent);
+  color: var(--paper);
+  padding: 10px 16px;
+  border-radius: var(--radius);
+  text-decoration: none;
+  font-size: 0.88rem;
+}
+.skip-link:focus{ left: 16px; top: 16px; }
+
+/* ---------- Utility buttons (print, theme) ---------- */
+.utility{
   position: fixed;
   top: 22px;
   right: 22px;
   z-index: 10;
+  display: flex;
+  gap: 8px;
+}
+.util-btn{
   border: 1px solid var(--line);
   background: var(--paper);
   color: var(--ink);
@@ -65,8 +84,8 @@ a:hover{ text-decoration-color: currentColor; }
   cursor: pointer;
   transition: border-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
 }
-.theme-toggle:hover{ border-color: var(--accent); color: var(--accent); transform: scale(1.06); }
-.theme-toggle:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+.util-btn:hover{ border-color: var(--accent); color: var(--accent); transform: scale(1.06); }
+.util-btn:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
 .icon{ width: 17px; height: 17px; }
 .icon-moon{ display: none; }
 [data-theme="dark"] .icon-sun{ display: none; }
@@ -156,11 +175,13 @@ a:hover{ text-decoration-color: currentColor; }
   grid-template-columns: 1fr auto;
   grid-template-areas: "name pct" "track track";
   gap: 6px 10px;
+}
+.js .skill__row{
   opacity: 0;
   transform: translateY(6px);
   transition: opacity 0.5s ease var(--delay), transform 0.5s ease var(--delay);
 }
-.skill__row.is-visible{ opacity: 1; transform: translateY(0); }
+.js .skill__row.is-visible{ opacity: 1; transform: translateY(0); }
 .skill__row:nth-child(1){ --delay: 0s; }
 .skill__row:nth-child(2){ --delay: 0.07s; }
 .skill__row:nth-child(3){ --delay: 0.14s; }
@@ -206,11 +227,13 @@ a:hover{ text-decoration-color: currentColor; }
   --delay: 0s;
   position: relative;
   padding-left: 28px;
+}
+.js .timeline__item{
   opacity: 0;
   transform: translateX(-6px);
   transition: opacity 0.5s ease var(--delay), transform 0.5s ease var(--delay);
 }
-.timeline__item.is-visible{ opacity: 1; transform: translateX(0); }
+.js .timeline__item.is-visible{ opacity: 1; transform: translateX(0); }
 .timeline__item:nth-child(1){ --delay: 0s; }
 .timeline__item:nth-child(2){ --delay: 0.09s; }
 .timeline__item:nth-child(3){ --delay: 0.18s; }
@@ -264,13 +287,15 @@ a:hover{ text-decoration-color: currentColor; }
   --delay: 0s;
   padding: 26px 0;
   border-top: 1px solid var(--line);
+  position: relative;
+}
+.js .project{
   opacity: 0;
   transform: translateY(6px);
   transition: opacity 0.5s ease var(--delay), transform 0.5s ease var(--delay);
-  position: relative;
 }
 .projects .project:last-child{ padding-bottom: 0; }
-.project.is-visible{ opacity: 1; transform: translateY(0); }
+.js .project.is-visible{ opacity: 1; transform: translateY(0); }
 .project:nth-child(1){ --delay: 0s; }
 .project:nth-child(2){ --delay: 0.09s; }
 .project:nth-child(3){ --delay: 0.18s; }
@@ -322,6 +347,76 @@ a:hover{ text-decoration-color: currentColor; }
 
 @media (max-width: 560px){
   .cv{ padding: 64px 20px 48px; }
-  .theme-toggle{ top: 14px; right: 14px; }
+  .utility{ top: 14px; right: 14px; }
   .project::before{ left: -20px; }
+}
+
+/* ---------- Print / save as PDF ---------- */
+@media print{
+  /* Always print on light paper, whatever the on-screen theme is. */
+  :root, :root[data-theme="dark"]{
+    --paper: #FFFFFF;
+    --paper-alt: #FFFFFF;
+    --ink: #000000;
+    --ink-soft: #333333;
+    --accent: #1F6F5C;
+    --line: #BBBBBB;
+  }
+
+  @page{ margin: 14mm; }
+
+  /* No animation on paper: a print snapshot must never catch an
+     element mid-fade. */
+  *{ transition: none !important; animation: none !important; }
+
+  body{ background: #fff; font-size: 10.5pt; line-height: 1.45; }
+  .cv{ max-width: none; padding: 0; }
+
+  /* Screen-only affordances. */
+  .utility, .skip-link{ display: none !important; }
+
+  /* Scroll-reveal items must never print blank, whether or not the
+     reader scrolled them into view first. */
+  .js .timeline__item,
+  .js .project,
+  .js .skill__row{
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
+  /* Keep the teal skill fills rather than letting the browser drop
+     backgrounds to save ink. */
+  .skill__track, .skill__fill, .timeline__marker{
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .cv-header{ padding-bottom: 20px; margin-bottom: 24px; }
+  .cv-body{ grid-template-columns: 190px 1fr; }
+  .cv-sidebar{ padding-right: 28px; }
+  .cv-main{ padding-left: 28px; }
+  .cv-block + .cv-block{ margin-top: 26px; }
+  .timeline{ gap: 20px; }
+  .project{ padding: 16px 0; }
+  /* Keep the tag next to its title instead of stranded at the far
+     edge of the page. */
+  .project__head{ justify-content: flex-start; gap: 12px; }
+
+  /* Don't split an entry across two pages. */
+  .timeline__item, .project, .skill__row, .cv-block__title{
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+  .cv-block__title{ break-after: avoid; page-break-after: avoid; }
+
+  /* The project links say "View on GitHub" on screen; on paper the
+     reader needs the actual URL. Contact links already show theirs. */
+  .project__link::after{
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    color: #555;
+  }
+
+  a{ text-decoration: none; }
+  .cv-footer{ margin-top: 28px; padding-top: 12px; font-size: 8pt; }
 }
