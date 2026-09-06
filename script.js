@@ -13,22 +13,26 @@ const SKILLS = [
 
 const EXPERIENCE = [
   {
-    period: "2025 to present",
-    title: "Student Assistant, Data & Logistics",
-    desc: "University hospital. Quality assurance and preparation of an equipment procurement list (20M+ DKK), including risk management and safety checks for operating-room equipment.",
+    period: "2026 to present",
+    title: "Student Assistant (Temporary), Capital Region of Denmark",
+    bullets: [
+      "Responsible for quality assurance and preparation of a procurement list exceeding DKK 40 million, including risk management and safety checks on equipment.",
+      "Participated in data extraction and systematic data cleaning and structuring in Python and Excel, with a focus on data quality prior to analysis.",
+      "Developed a data-driven dashboard in Python that gave management a consolidated overview of key metrics and supported decision-making.",
+    ],
   },
 ];
 
 const EDUCATION = [
   {
-    period: "2022 to 2025",
-    title: "Biology, Mathematics & Business Economics",
-    desc: "Frederiksborg Gymnasium og HF.",
-  },
-  {
     period: "2025 to 2028",
     title: "BSc Computer Science & Economics",
     desc: "University of Copenhagen.",
+  },
+  {
+    period: "2022 to 2025",
+    title: "Biology, Mathematics & Business Economics",
+    desc: "Frederiksborg Gymnasium og HF.",
   },
 ];
 
@@ -75,7 +79,8 @@ function renderTimelineList(items, elementId) {
       <span class="timeline__marker"></span>
       <span class="timeline__period mono">${t.period}</span>
       <h3 class="timeline__title">${t.title}</h3>
-      <p class="timeline__desc">${t.desc}</p>
+      ${t.desc ? `<p class="timeline__desc">${t.desc}</p>` : ""}
+      ${t.bullets ? `<ul class="timeline__bullets">${t.bullets.map((b) => `<li>${b}</li>`).join("")}</ul>` : ""}
     </li>`
   ).join("");
 }
