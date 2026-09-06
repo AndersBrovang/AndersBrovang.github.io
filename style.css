@@ -170,6 +170,7 @@ a:hover{ text-decoration-color: currentColor; }
 .skill__name{ grid-area: name; font-size: 0.88rem; font-weight: 500; }
 .skill__note{ display: block; font-size: 0.72rem; font-weight: 400; color: var(--ink-soft); margin-top: 2px; }
 .skill__track{
+  display: block;
   grid-area: track;
   height: 4px;
   background: var(--line);
@@ -177,6 +178,7 @@ a:hover{ text-decoration-color: currentColor; }
   overflow: hidden;
 }
 .skill__fill{
+  display: block;
   height: 100%;
   width: 0%;
   background: var(--accent);
