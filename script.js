@@ -13,20 +13,20 @@ const SKILLS = [
 
 const EXPERIENCE = [
   {
-    period: "2025 — present",
+    period: "2025 to present",
     title: "Student Assistant, Data & Logistics",
     desc: "University hospital. Quality assurance and preparation of an equipment procurement list (20M+ DKK), including risk management and safety checks for operating-room equipment.",
-  },
-  {
-    period: "2025",
-    title: "Sterile tray reconciliation project",
-    desc: "Wrote a Python script to reconcile tray counts between an old and a newly rebuilt inventory sheet, matched by product number, to catch discrepancies before rollout.",
   },
 ];
 
 const EDUCATION = [
   {
-    period: "2025 — 2028",
+    period: "2022 to 2025",
+    title: "Biology, Mathematics & Business Economics",
+    desc: "Frederiksborg Gymnasium og HF.",
+  },
+  {
+    period: "2025 to 2028",
     title: "BSc Computer Science & Economics",
     desc: "University of Copenhagen.",
   },
