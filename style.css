@@ -167,6 +167,18 @@ a:hover{ text-decoration-color: currentColor; }
 }
 .facts__row dd{ margin: 0; font-weight: 500; font-size: 0.9rem; }
 
+/* ---------- Languages ---------- */
+.langs{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 10px; }
+.langs li{
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  font-size: 0.9rem;
+}
+.langs__name{ font-weight: 500; }
+.langs__level{ font-size: 0.78rem; color: var(--ink-soft); }
+
 /* ---------- Skills ---------- */
 .skills{ list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 20px; }
 .skill__row{
