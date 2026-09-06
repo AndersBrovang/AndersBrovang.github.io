@@ -1,4 +1,4 @@
-# CV site
+# CV Website
 
-Plain HTML/CSS/JS, no build step, no dependencies except two Google Fonts
-loaded via CDN link. Three files: `index.html`, `style.css`, `script.js`.
+Just trying to make a universal CV anyone can have a look at. Made with Claude Code.
+https://andersbrovang.github.io/
