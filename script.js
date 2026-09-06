@@ -55,6 +55,7 @@ const PROJECTS = [
 
 function renderSkills() {
   const list = document.getElementById("skills-list");
+  if (!list) return;
   list.innerHTML = SKILLS.map(
     (s) => `
     <li class="skill__row reveal" data-level="${s.level}">
@@ -67,6 +68,7 @@ function renderSkills() {
 
 function renderTimelineList(items, elementId) {
   const list = document.getElementById(elementId);
+  if (!list) return;
   list.innerHTML = items.map(
     (t) => `
     <li class="timeline__item reveal">
@@ -80,6 +82,7 @@ function renderTimelineList(items, elementId) {
 
 function renderProjects() {
   const list = document.getElementById("projects-list");
+  if (!list) return;
   list.innerHTML = PROJECTS.map(
     (p) => `
     <article class="project reveal">
