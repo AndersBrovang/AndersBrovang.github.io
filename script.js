@@ -39,10 +39,17 @@ const PROJECTS = [
     linkLabel: "View on GitHub",
   },
   {
-    title: "Add your next project here",
-    tag: "Python",
-    desc: "Swap this card for a real project: what it does, what it's built with, and why it mattered. Link straight to the repo.",
-    link: "#",
+    title: "Financial Modelling Dashboard",
+    tag: "Streamlit",
+    desc: "An interactive Streamlit app for learning financial modelling hands-on: a loan/investment amortization calculator, a DCF valuation model, and a linked three-statement model, driven by typed assumptions or an uploaded CSV.",
+    link: "https://github.com/AndersBrovang/financial-modelling-dashboard",
+    linkLabel: "View on GitHub",
+  },
+  {
+    title: "Stock EDA Dashboard",
+    tag: "yfinance",
+    desc: "A Streamlit dashboard for exploring any stock ticker: candlestick charts with 20/50-day moving averages, a volatility histogram of daily returns, and one-click CSV export, pulling live data from Yahoo Finance.",
+    link: "https://github.com/AndersBrovang/Aktie-Dashboard",
     linkLabel: "View on GitHub",
   },
 ];
