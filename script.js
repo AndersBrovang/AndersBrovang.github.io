@@ -40,15 +40,22 @@ const PROJECTS = [
   {
     title: "Financial Modelling Dashboard",
     tag: "Streamlit",
-    desc: "An interactive Streamlit app for learning financial modelling hands-on: a loan/investment amortization calculator, a DCF valuation model, and a linked three-statement model, driven by typed assumptions or an uploaded CSV.",
+    desc: "Three financial models in one Streamlit app: a loan amortization schedule, a DCF valuation with terminal value, and a three-statement model linking income statement, cash flow and balance sheet. Each model runs either from typed assumptions or an uploaded CSV or Excel file, compares multiple scenarios side by side, and exports the full schedule as CSV.",
     link: "https://github.com/AndersBrovang/financial-modelling-dashboard",
     linkLabel: "View on GitHub",
   },
   {
     title: "Stock EDA Dashboard",
     tag: "yfinance",
-    desc: "A Streamlit dashboard for exploring any stock ticker: candlestick charts with 20/50-day moving averages, a volatility histogram of daily returns, and one-click CSV export, pulling live data from Yahoo Finance.",
+    desc: "Pulls live market data for any ticker from Yahoo Finance and renders it across three views: a Plotly candlestick chart with 20 and 50-day moving averages, a 50-bin histogram of daily returns for reading volatility, and a cleaned data table with one-click CSV export.",
     link: "https://github.com/AndersBrovang/Aktie-Dashboard",
+    linkLabel: "View on GitHub",
+  },
+  {
+    title: "Catastrophic Cancellation",
+    tag: "Python",
+    desc: "A numerical-analysis experiment in floating point precision. Computing √(x+1) - √x directly loses most of its significant digits as x grows, because subtracting two near-equal numbers leaves mostly rounding error. Benchmarks the naive form against an algebraically equivalent rewrite at x from 10⁶ up to 10¹².",
+    link: "https://github.com/AndersBrovang/catastrophic-cancellation",
     linkLabel: "View on GitHub",
   },
 ];
