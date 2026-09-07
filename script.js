@@ -122,6 +122,160 @@ const PROJECTS = [
   },
 ];
 
+// Coursework projects in F#. Grouped separately and labelled as
+// coursework, rather than mixed in with the self-directed work.
+const FSHARP_PROJECTS = [
+  {
+    title: "Pascal's Triangle",
+    tag: "F#",
+    desc: "Computes binomial coefficients two ways, once with recursion and pattern matching and once with mutable 2D arrays and loops, to compare a functional and an imperative solution to the same problem. Structured as a real project with a source file, a signature file fixing the public API, and a test script that verifies Pascal's identity, C(n,k) = C(n-1,k-1) + C(n-1,k). Guards against n > 1000 to avoid stack overflow.",
+    link: "https://github.com/AndersBrovang/Pascal",
+  },
+  {
+    title: "CSV Analyzer",
+    tag: "F#",
+    desc: "Summarises a CSV file from the command line: sum, average, minimum and maximum for numeric columns, plus counts and percentages per category, with the most and least common categories called out.",
+    link: "https://github.com/AndersBrovang/CSV-analyzer",
+  },
+  {
+    title: "Web Scraper",
+    tag: "F#",
+    desc: "Fetches every hyperlink from a given URL, prints a numbered report handling empty link text, summarises the total, and writes the results to CSV for further analysis.",
+    link: "https://github.com/AndersBrovang/Web-Scraper",
+  },
+  {
+    title: "Bank Accounts",
+    tag: "F#",
+    desc: "Models checking and savings accounts with tuples and lists: deposits, withdrawals, transfers between accounts, and applying interest across every customer's savings. Written without types or modules, using only recursion and higher-order functions.",
+    link: "https://github.com/AndersBrovang/Bank.fsx",
+  },
+  {
+    title: "Student Grouping",
+    tag: "F#",
+    desc: "Generates 50 unique pairs from 100 student IDs, assigns each student to a study line by ID range, and pairs students within each line. Purely immutable and side-effect free.",
+    link: "https://github.com/AndersBrovang/Groups.fsx",
+  },
+];
+
+// The skills page. Every claim points at something a reader can go
+// and check, rather than a number I assigned myself.
+const SKILL_GROUPS = [
+  {
+    name: "Languages",
+    skills: [
+      {
+        name: "Python",
+        summary:
+          "My main language. Used daily at work for cleaning and reconciling inventory data, and for every data or finance tool I build outside it.",
+        evidence: [
+          { label: "Financial Modelling Dashboard", url: "https://github.com/AndersBrovang/financial-modelling-dashboard" },
+          { label: "Stock EDA Dashboard", url: "https://github.com/AndersBrovang/Aktie-Dashboard" },
+          { label: "Catastrophic Cancellation", url: "https://github.com/AndersBrovang/catastrophic-cancellation" },
+        ],
+      },
+      {
+        name: "F#",
+        summary:
+          "Functional programming from my first year at KU: recursion, pattern matching, immutability, higher-order functions, and signature files to fix a module's public API.",
+        evidence: [
+          { label: "Pascal's Triangle", url: "https://github.com/AndersBrovang/Pascal" },
+          { label: "CSV Analyzer", url: "https://github.com/AndersBrovang/CSV-analyzer" },
+          { label: "Bank Accounts", url: "https://github.com/AndersBrovang/Bank.fsx" },
+        ],
+      },
+      {
+        name: "SQL",
+        summary:
+          "Currently learning. Comfortable with selects, filtering and joins; not yet something I would claim at a production level.",
+        evidence: [],
+      },
+    ],
+  },
+  {
+    name: "Data and analysis",
+    skills: [
+      {
+        name: "pandas",
+        summary:
+          "Rolling windows, derived columns, grouping and reshaping. Used for the moving averages and daily return series in the stock dashboard, and for cleaning at work.",
+        evidence: [
+          { label: "Stock EDA Dashboard", url: "https://github.com/AndersBrovang/Aktie-Dashboard" },
+        ],
+      },
+      {
+        name: "Data cleaning and reconciliation",
+        summary:
+          "Extracting, cleaning and structuring data so it can be trusted before anyone analyses it. This is the bulk of what I do at the Capital Region of Denmark.",
+        evidence: [],
+      },
+      {
+        name: "Excel",
+        summary:
+          "Formulas, pivot tables and audit work. Used alongside Python on the procurement list, where the spreadsheet is still the format everyone else works in.",
+        evidence: [],
+      },
+      {
+        name: "Numerical awareness",
+        summary:
+          "Knowing where floating point arithmetic quietly breaks, and how to rewrite an expression so it does not.",
+        evidence: [
+          { label: "Catastrophic Cancellation", url: "https://github.com/AndersBrovang/catastrophic-cancellation" },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Financial modelling",
+    skills: [
+      {
+        name: "DCF valuation",
+        summary:
+          "Projecting cash flows, discounting them back to present value, and handling terminal value. Built as a model rather than a spreadsheet formula.",
+        evidence: [
+          { label: "Financial Modelling Dashboard", url: "https://github.com/AndersBrovang/financial-modelling-dashboard" },
+          { label: "Live model", url: "models.html" },
+        ],
+      },
+      {
+        name: "Amortization schedules",
+        summary:
+          "Period-by-period loan and investment schedules, splitting each payment into interest and principal.",
+        evidence: [
+          { label: "Financial Modelling Dashboard", url: "https://github.com/AndersBrovang/financial-modelling-dashboard" },
+        ],
+      },
+      {
+        name: "Three-statement modelling",
+        summary:
+          "Linking revenue and debt assumptions through the income statement, cash flow and balance sheet so the three move together.",
+        evidence: [
+          { label: "Financial Modelling Dashboard", url: "https://github.com/AndersBrovang/financial-modelling-dashboard" },
+        ],
+      },
+    ],
+  },
+  {
+    name: "Tools",
+    skills: [
+      {
+        name: "Streamlit",
+        summary: "The front end for both dashboards: inputs, tabs, file upload and CSV export.",
+        evidence: [],
+      },
+      {
+        name: "Plotly",
+        summary: "Candlestick charts, histograms and interactive figures.",
+        evidence: [],
+      },
+      {
+        name: "Git and GitHub",
+        summary: "Version control for everything here, including this site.",
+        evidence: [],
+      },
+    ],
+  },
+];
+
 // ---------------------------------------------------------------
 // Rendering
 // ---------------------------------------------------------------
@@ -199,12 +353,20 @@ function projectDetailMarkup(project, panelId) {
     </div>`;
 }
 
+// The container declares what it wants: data-detail="false" drops the
+// expandable panels, data-limit="3" shows only the first few. That way
+// every page calls this the same way.
 function renderProjects() {
   const list = document.getElementById("projects-list");
   if (!list) return;
-  list.innerHTML = PROJECTS.map((p, i) => {
+
+  const withDetail = list.dataset.detail !== "false";
+  const limit = Number(list.dataset.limit) || PROJECTS.length;
+
+  list.innerHTML = PROJECTS.slice(0, limit).map((p, i) => {
     const panelId = `project-detail-${i}`;
-    const toggle = p.detail
+    const showDetail = withDetail && p.detail;
+    const toggle = showDetail
       ? `<button class="project__toggle" type="button"
                  aria-expanded="false" aria-controls="${panelId}">
            <svg class="project__chevron" viewBox="0 0 24 24" fill="none"
@@ -226,9 +388,67 @@ function renderProjects() {
         <a class="project__link" href="${p.link}" target="_blank" rel="noopener">${p.linkLabel}</a>
         ${toggle}
       </div>
-      ${p.detail ? projectDetailMarkup(p, panelId) : ""}
+      ${showDetail ? projectDetailMarkup(p, panelId) : ""}
     </article>`;
   }).join("");
+}
+
+function renderFsharpProjects() {
+  const list = document.getElementById("fsharp-list");
+  if (!list) return;
+  list.innerHTML = FSHARP_PROJECTS.map(
+    (p) => `
+    <article class="project reveal">
+      <div class="project__head">
+        <h3 class="project__title">${p.title}</h3>
+        <span class="project__tag mono">${p.tag}</span>
+      </div>
+      <p class="project__desc">${p.desc}</p>
+      <div class="project__actions">
+        <a class="project__link" href="${p.link}" target="_blank" rel="noopener">View on GitHub</a>
+      </div>
+    </article>`
+  ).join("");
+}
+
+function renderSkillGroups() {
+  const list = document.getElementById("skill-groups");
+  if (!list) return;
+  list.innerHTML = SKILL_GROUPS.map(
+    (group) => `
+    <section class="cv-block skill-group">
+      <h2 class="cv-block__title">${group.name}</h2>
+      <div class="skill-group__items">
+        ${group.skills
+          .map(
+            (s) => `
+          <article class="skill-card reveal">
+            <h3 class="skill-card__name">${s.name}</h3>
+            <p class="skill-card__summary">${s.summary}</p>
+            ${
+              s.evidence && s.evidence.length
+                ? `<div class="skill-card__evidence">
+                     <span class="skill-card__evidence-label">Where I have used it</span>
+                     <ul class="skill-card__links">
+                       ${s.evidence
+                         .map((e) => {
+                           const external = e.url.startsWith("http");
+                           const attrs = external
+                             ? ' target="_blank" rel="noopener"'
+                             : "";
+                           return `<li><a class="course course--link" href="${e.url}"${attrs}>${e.label}</a></li>`;
+                         })
+                         .join("")}
+                     </ul>
+                   </div>`
+                : ""
+            }
+          </article>`
+          )
+          .join("")}
+      </div>
+    </section>`
+  ).join("");
 }
 
 // Progressive disclosure: keep the CV scannable, but let a reader who
@@ -590,6 +810,7 @@ function initModel() {
 
 function initFooterDate() {
   const el = document.getElementById("last-updated");
+  if (!el) return;
   const now = new Date();
   const dd = String(now.getDate()).padStart(2, "0");
   const mm = String(now.getMonth() + 1).padStart(2, "0");
@@ -603,6 +824,8 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTimelineList(EXPERIENCE, "experience-list");
   renderTimelineList(EDUCATION, "education-list");
   renderProjects();
+  renderFsharpProjects();
+  renderSkillGroups();
   initProjectToggles();
   initTheme();
   initPrint();

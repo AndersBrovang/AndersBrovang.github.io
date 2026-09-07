@@ -93,8 +93,103 @@ a:hover{ text-decoration-color: currentColor; }
 [data-theme="dark"] .icon-sun{ display: none; }
 [data-theme="dark"] .icon-moon{ display: block; }
 
+/* ---------- Site layout: nav rail + page ---------- */
+.layout{ display: grid; grid-template-columns: 224px minmax(0, 1fr); }
+
+.site-nav{
+  position: sticky;
+  top: 0;
+  align-self: start;
+  height: 100vh;
+  padding: 44px 26px;
+  border-right: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 34px;
+}
+.site-nav__brand{
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  text-decoration: none;
+  color: var(--ink);
+}
+.site-nav__mark{
+  flex-shrink: 0;
+  width: 30px;
+  height: 30px;
+  border-radius: var(--radius);
+  background: var(--accent);
+  color: var(--paper);
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.site-nav__name{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 0.92rem;
+  line-height: 1.2;
+}
+.site-nav__list{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.site-nav__link{
+  display: block;
+  position: relative;
+  padding: 7px 0 7px 14px;
+  font-size: 0.9rem;
+  color: var(--ink-soft);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+.site-nav__link::before{
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 2px;
+  height: 0;
+  background: var(--accent);
+  border-radius: 2px;
+  transition: height 0.2s ease;
+}
+.site-nav__link:hover{ color: var(--ink); }
+.site-nav__link:hover::before{ height: 14px; }
+.site-nav__link.is-active{ color: var(--accent); }
+.site-nav__link.is-active::before{ height: 20px; }
+.site-nav__link:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
 /* ---------- Page shell ---------- */
-.cv{ max-width: 980px; margin: 0 auto; padding: 76px 32px 64px; }
+.cv{ max-width: 900px; margin: 0 auto; padding: 76px 48px 64px; }
+
+/* Heading block for the secondary pages. */
+.page-head{
+  padding-bottom: 28px;
+  margin-bottom: 44px;
+  border-bottom: 1px solid var(--line);
+}
+.page-head__title{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(1.7rem, 3.6vw, 2.2rem);
+  letter-spacing: -0.01em;
+  margin: 0 0 10px;
+  line-height: 1.15;
+}
+.page-head__lede{
+  color: var(--ink-soft);
+  margin: 0;
+  max-width: 62ch;
+}
 
 /* ---------- Letterhead ---------- */
 .cv-header{
@@ -528,6 +623,8 @@ a:hover{ text-decoration-color: currentColor; }
 .model__result-label{ font-size: 0.78rem; color: var(--ink-soft); }
 .model__npv{ font-size: 1.05rem; font-weight: 500; color: var(--accent); }
 
+.cv-more{ margin: 22px 0 0; font-size: 0.9rem; }
+
 /* ---------- Monte Carlo ---------- */
 .sim{ margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--line); }
 .sim__title{
@@ -589,6 +686,61 @@ a:hover{ text-decoration-color: currentColor; }
 }
 .sim__stat dd{ margin: 0; font-size: 0.92rem; }
 .sim__stat--median dd{ color: var(--accent); font-weight: 500; }
+.sim__note{
+  margin: 20px 0 0;
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  max-width: 62ch;
+}
+
+/* ---------- Skills page ---------- */
+.skill-group__items{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+.skill-card{
+  --delay: 0s;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.js .skill-card{
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.5s ease var(--delay), transform 0.5s ease var(--delay);
+}
+.js .skill-card.is-visible{ opacity: 1; transform: translateY(0); }
+.skill-card:nth-child(2){ --delay: 0.07s; }
+.skill-card:nth-child(3){ --delay: 0.14s; }
+.skill-card:nth-child(4){ --delay: 0.21s; }
+.skill-card__name{ margin: 0 0 8px; font-size: 0.98rem; font-weight: 600; }
+.skill-card__summary{ margin: 0; color: var(--ink-soft); font-size: 0.92rem; }
+.skill-card__evidence{ margin-top: 14px; }
+.skill-card__evidence-label{
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+.skill-card__links{
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+/* ---------- Grouped project sections ---------- */
+.project-group + .project-group{ margin-top: 52px; }
+.project-group__note{
+  color: var(--ink-soft);
+  margin: -8px 0 20px;
+  font-size: 0.88rem;
+  max-width: 62ch;
+}
 
 /* ---------- 404 ---------- */
 .notfound{
@@ -628,6 +780,40 @@ a:hover{ text-decoration-color: currentColor; }
 .cv-footer a:hover{ color: var(--accent); text-decoration-color: currentColor; }
 
 /* ---------- Responsive ---------- */
+/* Below this the rail becomes a bar across the top. */
+@media (max-width: 940px){
+  .layout{ grid-template-columns: 1fr; }
+  .site-nav{
+    position: static;
+    height: auto;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    padding: 18px 20px;
+    border-right: none;
+    border-bottom: 1px solid var(--line);
+  }
+  .site-nav__name{ font-size: 0.85rem; }
+  .site-nav__list{ flex-direction: row; gap: 4px; flex-wrap: wrap; }
+  .site-nav__link{ padding: 6px 10px; }
+  .site-nav__link::before{
+    top: auto;
+    bottom: 0;
+    left: 10px;
+    right: 10px;
+    width: auto;
+    height: 2px;
+    transform: none;
+    transition: opacity 0.2s ease;
+    opacity: 0;
+  }
+  .site-nav__link:hover::before,
+  .site-nav__link.is-active::before{ height: 2px; opacity: 1; }
+  .site-nav__foot{ display: none; }
+  .cv{ padding: 48px 28px 56px; }
+}
+
 @media (max-width: 780px){
   .cv-body{ grid-template-columns: 1fr; }
   .cv-sidebar{ padding-right: 0; padding-bottom: 40px; margin-bottom: 40px; border-bottom: 1px solid var(--line); }
@@ -663,9 +849,13 @@ a:hover{ text-decoration-color: currentColor; }
   body{ background: #fff; font-size: 10.5pt; line-height: 1.45; }
   .cv{ max-width: none; padding: 0; }
 
-  /* Screen-only affordances. An interactive model means nothing on
-     paper, so it does not get printed. */
-  .utility, .skip-link, #model, .project__toggle{ display: none !important; }
+  /* Screen-only affordances. Sliders are inert on paper, but the
+     charts and the numbers they produced still say something, so
+     those stay. */
+  .utility, .skip-link, .project__toggle, .site-nav,
+  .model__controls, .sim__controls{ display: none !important; }
+  .layout{ display: block; }
+  .model{ grid-template-columns: 1fr; }
 
   /* Scroll-reveal items must never print blank, whether or not the
      reader scrolled them into view first. */
