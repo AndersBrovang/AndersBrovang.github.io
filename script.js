@@ -7,7 +7,8 @@
 const SKILLS = [
   { name: "Python", level: 65, note: "pandas, data cleaning/reconciliation" },
   { name: "Excel", level: 85, note: "formulas, pivot tables, audits" },
-  { name: "Data analysis", level: 70, note: "reconciliation, QA checks" },
+  { name: "Data analysis", level: 75, note: "reconciliation, QA checks" },
+  { name: "Risk management", level: 70, note: "procurement risk, safety checks" },
 ];
 
 const EXPERIENCE = [
@@ -209,6 +210,12 @@ const SKILL_GROUPS = [
         name: "Excel",
         summary:
           "Formulas, pivot tables and audit work. Used alongside Python on the procurement list, where the spreadsheet is still the format everyone else works in.",
+        evidence: [],
+      },
+      {
+        name: "Risk management",
+        summary:
+          "Assessing and documenting risk on a procurement list above DKK 40 million, including safety checks on operating-room equipment before anything is signed off.",
         evidence: [],
       },
       {
