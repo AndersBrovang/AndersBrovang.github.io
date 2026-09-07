@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Projects | Anders Brovang Agergaard</title>
-<meta name="description" content="Data and finance tools in Python, plus functional programming coursework in F#.">
+<meta name="description" content="Data and finance tools in Python, plus numerical methods and econometrics written from scratch.">
 <link rel="canonical" href="https://andersbrovang.github.io/projects.html">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Projects | Anders Brovang Agergaard">
-<meta property="og:description" content="Data and finance tools in Python, plus functional programming coursework in F#.">
+<meta property="og:description" content="Data and finance tools in Python, plus numerical methods and econometrics written from scratch.">
 <meta property="og:url" content="https://andersbrovang.github.io/projects.html">
 <meta property="og:image" content="https://andersbrovang.github.io/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -17,7 +17,7 @@
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Projects | Anders Brovang Agergaard">
-<meta name="twitter:description" content="Data and finance tools in Python, plus functional programming coursework in F#.">
+<meta name="twitter:description" content="Data and finance tools in Python, plus numerical methods and econometrics written from scratch.">
 <meta name="twitter:image" content="https://andersbrovang.github.io/og-image.png">
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231F6F5C'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' font-weight='600' text-anchor='middle' fill='%23F7F7F5'%3EA%3C/text%3E%3C/svg%3E">
@@ -30,6 +30,9 @@
       var stored = localStorage.getItem("theme");
       var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       root.setAttribute("data-theme", stored || (prefersDark ? "dark" : "light"));
+      if (localStorage.getItem("nav") === "collapsed") {
+        root.classList.add("nav-collapsed");
+      }
     } catch (e) {}
   })();
 </script>
@@ -37,7 +40,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=13">
+<link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
 
@@ -55,11 +58,20 @@
 
 <div class="layout">
 
-  <nav class="site-nav" aria-label="Main">
-    <a class="site-nav__brand" href="index.html">
-      <span class="site-nav__mark" aria-hidden="true">A</span>
-      <span class="site-nav__name">Anders Brovang<br>Agergaard</span>
-    </a>
+  <nav class="site-nav" id="site-nav" aria-label="Main">
+    <div class="site-nav__top">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__mark" aria-hidden="true">A</span>
+        <span class="site-nav__name">Anders Brovang<br>Agergaard</span>
+      </a>
+      <button class="nav-toggle" id="nav-toggle" type="button"
+              aria-expanded="true" aria-controls="site-nav"
+              aria-label="Collapse navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+    </div>
     <ul class="site-nav__list">
       <li><a class="site-nav__link" href="index.html">CV</a></li>
       <li><a class="site-nav__link is-active" href="projects.html" aria-current="page">Projects</a></li>
@@ -76,31 +88,30 @@
         Two threads run through these. The first is finance and data:
         tools I build to understand how a valuation or a price series
         actually behaves once you have to implement it rather than read
-        about it. The second is functional programming in F#, from my
-        first year at the University of Copenhagen.
+        about it. The second is the mathematics underneath, written out
+        by hand rather than called from a library, because implementing
+        something is the fastest way to find out whether I understood it.
       </p>
     </header>
 
     <section class="cv-block project-group">
       <h2 class="cv-block__title">Data and finance</h2>
       <p class="project-group__note">
-        Self-directed work. Open any of them for the stack and how it
-        is put together.
+        Open any of them for the stack and how it is put together.
       </p>
-      <div class="projects" id="projects-list">
+      <div class="projects" id="projects-list" data-projects data-group="finance">
         <!-- populated by script.js -->
       </div>
     </section>
 
     <section class="cv-block project-group">
-      <h2 class="cv-block__title">Functional programming in F#</h2>
+      <h2 class="cv-block__title">Numerical methods and econometrics</h2>
       <p class="project-group__note">
-        Coursework from Programming and Problem Solving. Written in a
-        purely functional style: immutability, recursion, pattern
-        matching and higher-order functions, with no mutable state
-        unless the exercise was specifically about contrasting it.
+        Smaller pieces, written to understand a method rather than to
+        ship a tool. Each one implements something a library would
+        normally hide, so that the failure modes are visible.
       </p>
-      <div class="projects" id="fsharp-list">
+      <div class="projects" data-projects data-group="numerical">
         <!-- populated by script.js -->
       </div>
     </section>
@@ -113,6 +124,6 @@
 
 </div>
 
-<script src="script.js?v=13"></script>
+<script src="script.js?v=14"></script>
 </body>
 </html>

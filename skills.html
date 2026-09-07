@@ -30,6 +30,9 @@
       var stored = localStorage.getItem("theme");
       var prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
       root.setAttribute("data-theme", stored || (prefersDark ? "dark" : "light"));
+      if (localStorage.getItem("nav") === "collapsed") {
+        root.classList.add("nav-collapsed");
+      }
     } catch (e) {}
   })();
 </script>
@@ -37,7 +40,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=13">
+<link rel="stylesheet" href="style.css?v=14">
 </head>
 <body>
 
@@ -55,11 +58,20 @@
 
 <div class="layout">
 
-  <nav class="site-nav" aria-label="Main">
-    <a class="site-nav__brand" href="index.html">
-      <span class="site-nav__mark" aria-hidden="true">A</span>
-      <span class="site-nav__name">Anders Brovang<br>Agergaard</span>
-    </a>
+  <nav class="site-nav" id="site-nav" aria-label="Main">
+    <div class="site-nav__top">
+      <a class="site-nav__brand" href="index.html">
+        <span class="site-nav__mark" aria-hidden="true">A</span>
+        <span class="site-nav__name">Anders Brovang<br>Agergaard</span>
+      </a>
+      <button class="nav-toggle" id="nav-toggle" type="button"
+              aria-expanded="true" aria-controls="site-nav"
+              aria-label="Collapse navigation">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+      </button>
+    </div>
     <ul class="site-nav__list">
       <li><a class="site-nav__link" href="index.html">CV</a></li>
       <li><a class="site-nav__link" href="projects.html">Projects</a></li>
@@ -92,6 +104,6 @@
 
 </div>
 
-<script src="script.js?v=13"></script>
+<script src="script.js?v=14"></script>
 </body>
 </html>

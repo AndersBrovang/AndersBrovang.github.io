@@ -5,10 +5,9 @@
 // ---------------------------------------------------------------
 
 const SKILLS = [
-  { name: "Python", level: 80, note: "pandas, data cleaning/reconciliation" },
+  { name: "Python", level: 65, note: "pandas, data cleaning/reconciliation" },
   { name: "Excel", level: 85, note: "formulas, pivot tables, audits" },
   { name: "Data analysis", level: 70, note: "reconciliation, QA checks" },
-  { name: "SQL", level: 35, note: "learning" },
 ];
 
 const EXPERIENCE = [
@@ -71,8 +70,11 @@ const EDUCATION = [
   },
 ];
 
+// `group` decides which section of projects.html a project lands in.
+// The CV page ignores it and just takes the first few.
 const PROJECTS = [
   {
+    group: "finance",
     title: "Financial Modelling Dashboard",
     tag: "Streamlit",
     desc: "Three financial models in one Streamlit app: a loan amortization schedule, a DCF valuation with terminal value, and a three-statement model linking income statement, cash flow and balance sheet. Each model runs either from typed assumptions or an uploaded CSV or Excel file, compares multiple scenarios side by side, and exports the full schedule as CSV.",
@@ -89,6 +91,7 @@ const PROJECTS = [
     },
   },
   {
+    group: "finance",
     title: "Stock EDA Dashboard",
     tag: "yfinance",
     desc: "Pulls live market data for any ticker from Yahoo Finance and renders it across three views: a Plotly candlestick chart with 20 and 50-day moving averages, a 50-bin histogram of daily returns for reading volatility, and a cleaned data table with one-click CSV export.",
@@ -105,6 +108,41 @@ const PROJECTS = [
     },
   },
   {
+    group: "numerical",
+    title: "Simple Linear Regression",
+    tag: "NumPy",
+    desc: "Estimates y = β₀ + β₁x + u two independent ways so the answers can be checked against each other: the closed-form covariance solution, and the matrix normal equations (X'X)⁻¹X'y. Also reports R², the share of variation in y explained by x.",
+    link: "https://github.com/AndersBrovang/slr",
+    linkLabel: "View on GitHub",
+    detail: {
+      stack: ["Python", "NumPy"],
+      points: [
+        "slr_direct computes β₁ = cov(x, y) / var(x) and β₀ = ȳ - β₁x̄, the closed form you derive by hand.",
+        "slr_matrix solves the same problem as β = (X'X)⁻¹X'y with X built as [1, x]. Same answer, but this is the form that generalises: adding regressors just means adding columns to X.",
+        "Running both and checking they agree is the point of the exercise. Two derivations that must produce the same number give you a free test of whether either was implemented correctly.",
+        "R² is computed as 1 - SSR/SST rather than pulled from a library, so the decomposition of variation stays visible.",
+      ],
+    },
+  },
+  {
+    group: "numerical",
+    title: "LU Decomposition",
+    tag: "NumPy",
+    desc: "Factors a square matrix into L and U with Gaussian elimination and partial pivoting, so that A = LU up to row order. L is unit lower triangular and doubles as a record of the elimination multipliers; U is what elimination leaves behind.",
+    link: "https://github.com/AndersBrovang/LU-decomposition",
+    linkLabel: "View on GitHub",
+    detail: {
+      stack: ["Python", "NumPy"],
+      points: [
+        "L is never computed separately. Every entry below the diagonal is the multiplier used to eliminate that position, so L ends up being a record of the elimination steps themselves.",
+        "Partial pivoting picks the largest-magnitude entry in each column as the pivot before eliminating with it. Back-substitution divides by the pivot, so a pivot close to zero amplifies whatever rounding error already exists by roughly 1/pivot.",
+        "Elimination runs on a float copy of A rather than on A itself, and each row swap is applied to both U and the already-filled part of L.",
+        "Same underlying concern as the catastrophic cancellation experiment below: the algebra is exact, the arithmetic is not, and the implementation has to account for the gap.",
+      ],
+    },
+  },
+  {
+    group: "numerical",
     title: "Catastrophic Cancellation",
     tag: "Python",
     desc: "A numerical-analysis experiment in floating point precision. Computing √(x+1) - √x directly loses most of its significant digits as x grows, because subtracting two near-equal numbers leaves mostly rounding error. Benchmarks the naive form against an algebraically equivalent rewrite at x from 10⁶ up to 10¹².",
@@ -122,41 +160,6 @@ const PROJECTS = [
   },
 ];
 
-// Coursework projects in F#. Grouped separately and labelled as
-// coursework, rather than mixed in with the self-directed work.
-const FSHARP_PROJECTS = [
-  {
-    title: "Pascal's Triangle",
-    tag: "F#",
-    desc: "Computes binomial coefficients two ways, once with recursion and pattern matching and once with mutable 2D arrays and loops, to compare a functional and an imperative solution to the same problem. Structured as a real project with a source file, a signature file fixing the public API, and a test script that verifies Pascal's identity, C(n,k) = C(n-1,k-1) + C(n-1,k). Guards against n > 1000 to avoid stack overflow.",
-    link: "https://github.com/AndersBrovang/Pascal",
-  },
-  {
-    title: "CSV Analyzer",
-    tag: "F#",
-    desc: "Summarises a CSV file from the command line: sum, average, minimum and maximum for numeric columns, plus counts and percentages per category, with the most and least common categories called out.",
-    link: "https://github.com/AndersBrovang/CSV-analyzer",
-  },
-  {
-    title: "Web Scraper",
-    tag: "F#",
-    desc: "Fetches every hyperlink from a given URL, prints a numbered report handling empty link text, summarises the total, and writes the results to CSV for further analysis.",
-    link: "https://github.com/AndersBrovang/Web-Scraper",
-  },
-  {
-    title: "Bank Accounts",
-    tag: "F#",
-    desc: "Models checking and savings accounts with tuples and lists: deposits, withdrawals, transfers between accounts, and applying interest across every customer's savings. Written without types or modules, using only recursion and higher-order functions.",
-    link: "https://github.com/AndersBrovang/Bank.fsx",
-  },
-  {
-    title: "Student Grouping",
-    tag: "F#",
-    desc: "Generates 50 unique pairs from 100 student IDs, assigns each student to a study line by ID range, and pairs students within each line. Purely immutable and side-effect free.",
-    link: "https://github.com/AndersBrovang/Groups.fsx",
-  },
-];
-
 // The skills page. Every claim points at something a reader can go
 // and check, rather than a number I assigned myself.
 const SKILL_GROUPS = [
@@ -170,24 +173,9 @@ const SKILL_GROUPS = [
         evidence: [
           { label: "Financial Modelling Dashboard", url: "https://github.com/AndersBrovang/financial-modelling-dashboard" },
           { label: "Stock EDA Dashboard", url: "https://github.com/AndersBrovang/Aktie-Dashboard" },
-          { label: "Catastrophic Cancellation", url: "https://github.com/AndersBrovang/catastrophic-cancellation" },
+          { label: "Simple Linear Regression", url: "https://github.com/AndersBrovang/slr" },
+          { label: "LU Decomposition", url: "https://github.com/AndersBrovang/LU-decomposition" },
         ],
-      },
-      {
-        name: "F#",
-        summary:
-          "Functional programming from my first year at KU: recursion, pattern matching, immutability, higher-order functions, and signature files to fix a module's public API.",
-        evidence: [
-          { label: "Pascal's Triangle", url: "https://github.com/AndersBrovang/Pascal" },
-          { label: "CSV Analyzer", url: "https://github.com/AndersBrovang/CSV-analyzer" },
-          { label: "Bank Accounts", url: "https://github.com/AndersBrovang/Bank.fsx" },
-        ],
-      },
-      {
-        name: "SQL",
-        summary:
-          "Currently learning. Comfortable with selects, filtering and joins; not yet something I would claim at a production level.",
-        evidence: [],
       },
     ],
   },
@@ -203,6 +191,15 @@ const SKILL_GROUPS = [
         ],
       },
       {
+        name: "NumPy",
+        summary:
+          "Matrix work rather than array convenience: building design matrices, solving normal equations, and running elimination by hand instead of calling a solver.",
+        evidence: [
+          { label: "Simple Linear Regression", url: "https://github.com/AndersBrovang/slr" },
+          { label: "LU Decomposition", url: "https://github.com/AndersBrovang/LU-decomposition" },
+        ],
+      },
+      {
         name: "Data cleaning and reconciliation",
         summary:
           "Extracting, cleaning and structuring data so it can be trusted before anyone analyses it. This is the bulk of what I do at the Capital Region of Denmark.",
@@ -215,11 +212,20 @@ const SKILL_GROUPS = [
         evidence: [],
       },
       {
-        name: "Numerical awareness",
+        name: "Numerical methods",
         summary:
-          "Knowing where floating point arithmetic quietly breaks, and how to rewrite an expression so it does not.",
+          "Knowing where floating point arithmetic quietly breaks and how to work around it: rewriting an expression to avoid cancellation, or pivoting so elimination does not divide by something near zero.",
         evidence: [
           { label: "Catastrophic Cancellation", url: "https://github.com/AndersBrovang/catastrophic-cancellation" },
+          { label: "LU Decomposition", url: "https://github.com/AndersBrovang/LU-decomposition" },
+        ],
+      },
+      {
+        name: "Regression",
+        summary:
+          "Ordinary least squares from both sides: the closed form you derive by hand, and the matrix formulation that generalises to more regressors. Currently taking Econometrics A.",
+        evidence: [
+          { label: "Simple Linear Regression", url: "https://github.com/AndersBrovang/slr" },
         ],
       },
     ],
@@ -270,6 +276,29 @@ const SKILL_GROUPS = [
       {
         name: "Git and GitHub",
         summary: "Version control for everything here, including this site.",
+        evidence: [],
+      },
+    ],
+  },
+  {
+    name: "Currently learning",
+    skills: [
+      {
+        name: "SQL",
+        summary:
+          "Selects, filtering and joins so far. Not yet at the point where I would put it on the list above.",
+        evidence: [],
+      },
+      {
+        name: "Machine learning",
+        summary:
+          "Starting from the regression end rather than the framework end, so that the statistics are in place before the tooling.",
+        evidence: [],
+      },
+      {
+        name: "Financial modelling",
+        summary:
+          "Building the models has taught me the mechanics. The valuation theory underneath them is what I am working through next.",
         evidence: [],
       },
     ],
@@ -353,18 +382,20 @@ function projectDetailMarkup(project, panelId) {
     </div>`;
 }
 
-// The container declares what it wants: data-detail="false" drops the
-// expandable panels, data-limit="3" shows only the first few. That way
+// Each container declares what it wants through data attributes:
+// data-group picks one section of PROJECTS, data-detail="false" drops
+// the expandable panels, data-limit caps how many are shown. That way
 // every page calls this the same way.
 function renderProjects() {
-  const list = document.getElementById("projects-list");
-  if (!list) return;
+  document.querySelectorAll("[data-projects]").forEach((list) => {
+    const group = list.dataset.group;
+    const withDetail = list.dataset.detail !== "false";
+    const limit = Number(list.dataset.limit) || PROJECTS.length;
+    const chosen = PROJECTS.filter((p) => !group || p.group === group).slice(0, limit);
 
-  const withDetail = list.dataset.detail !== "false";
-  const limit = Number(list.dataset.limit) || PROJECTS.length;
-
-  list.innerHTML = PROJECTS.slice(0, limit).map((p, i) => {
-    const panelId = `project-detail-${i}`;
+    list.innerHTML = chosen.map((p) => {
+      // Index into PROJECTS, so panel ids stay unique across containers.
+      const panelId = `project-detail-${PROJECTS.indexOf(p)}`;
     const showDetail = withDetail && p.detail;
     const toggle = showDetail
       ? `<button class="project__toggle" type="button"
@@ -390,25 +421,8 @@ function renderProjects() {
       </div>
       ${showDetail ? projectDetailMarkup(p, panelId) : ""}
     </article>`;
-  }).join("");
-}
-
-function renderFsharpProjects() {
-  const list = document.getElementById("fsharp-list");
-  if (!list) return;
-  list.innerHTML = FSHARP_PROJECTS.map(
-    (p) => `
-    <article class="project reveal">
-      <div class="project__head">
-        <h3 class="project__title">${p.title}</h3>
-        <span class="project__tag mono">${p.tag}</span>
-      </div>
-      <p class="project__desc">${p.desc}</p>
-      <div class="project__actions">
-        <a class="project__link" href="${p.link}" target="_blank" rel="noopener">View on GitHub</a>
-      </div>
-    </article>`
-  ).join("");
+    }).join("");
+  });
 }
 
 function renderSkillGroups() {
@@ -500,6 +514,38 @@ function initTheme() {
       localStorage.setItem("theme", next);
     } catch (e) {}
     syncLabel(next);
+  });
+}
+
+// ---------------------------------------------------------------
+// Collapsible nav rail
+//
+// The collapsed state is applied by the inline script in <head> so the
+// layout does not jump on load. This only wires the button.
+// ---------------------------------------------------------------
+
+function initNavToggle() {
+  const toggle = document.getElementById("nav-toggle");
+  if (!toggle) return;
+  const root = document.documentElement;
+
+  const sync = () => {
+    const collapsed = root.classList.contains("nav-collapsed");
+    toggle.setAttribute("aria-expanded", String(!collapsed));
+    toggle.setAttribute(
+      "aria-label",
+      collapsed ? "Expand navigation" : "Collapse navigation"
+    );
+  };
+
+  sync();
+
+  toggle.addEventListener("click", () => {
+    const collapsed = root.classList.toggle("nav-collapsed");
+    try {
+      localStorage.setItem("nav", collapsed ? "collapsed" : "open");
+    } catch (e) {}
+    sync();
   });
 }
 
@@ -824,10 +870,10 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTimelineList(EXPERIENCE, "experience-list");
   renderTimelineList(EDUCATION, "education-list");
   renderProjects();
-  renderFsharpProjects();
   renderSkillGroups();
   initProjectToggles();
   initTheme();
+  initNavToggle();
   initPrint();
   initReveals();
   initSkillFills();
