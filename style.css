@@ -662,6 +662,47 @@ a:hover{ text-decoration-color: currentColor; }
 
 .cv-more{ margin: 22px 0 0; font-size: 0.9rem; }
 
+/* ---------- Beta regression ---------- */
+/* Proportional scaling, so the points stay circular at any width
+   and the slope is not visually distorted. */
+.beta__chart{ width: 100%; height: auto; display: block; }
+.beta__axis{ stroke: var(--line); stroke-width: 1; }
+.beta__point{ fill: var(--accent); fill-opacity: 0.55; }
+.beta__residual{ stroke: var(--ink-soft); stroke-width: 1; stroke-opacity: 0.28; }
+.beta__fit{ stroke: var(--accent); stroke-width: 2.5; }
+.beta__true{ stroke: var(--ink-soft); stroke-width: 1.5; stroke-dasharray: 6 5; }
+
+.beta__check{
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+  cursor: pointer;
+}
+.beta__check input{ accent-color: var(--accent); cursor: pointer; margin: 0; }
+
+.beta__legend{
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 20px;
+  margin-top: 12px;
+  font-size: 0.74rem;
+  color: var(--ink-soft);
+}
+.beta__key{ display: inline-flex; align-items: center; gap: 7px; }
+.beta__key::before{
+  content: "";
+  width: 18px;
+  height: 0;
+  border-top-width: 2px;
+  border-top-style: solid;
+  flex-shrink: 0;
+}
+.beta__key--fit::before{ border-color: var(--accent); }
+.beta__key--true::before{ border-color: var(--ink-soft); border-top-style: dashed; }
+.beta__key--axis::before{ display: none; }
+
 /* ---------- Monte Carlo ---------- */
 .sim{ margin-top: 40px; padding-top: 28px; border-top: 1px solid var(--line); }
 .sim__title{

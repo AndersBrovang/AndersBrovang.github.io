@@ -525,6 +525,181 @@ function initTheme() {
 }
 
 // ---------------------------------------------------------------
+// Beta as a regression slope
+//
+// Simulates asset returns from a market series with a known beta,
+// then estimates that beta back out with ordinary least squares.
+// Same estimator as the slr repository: beta = cov(x, y) / var(x).
+// ---------------------------------------------------------------
+
+const MARKET_SD = 4; // standard deviation of market returns, in %
+
+function simulateReturns({ trueBeta, noise, observations }, seed) {
+  const random = mulberry32(seed);
+  const points = [];
+
+  for (let i = 0; i < observations; i++) {
+    const market = normalDraw(random, 0, MARKET_SD);
+    // Asset return = beta * market + something only this asset does.
+    const asset = trueBeta * market + normalDraw(random, 0, noise);
+    points.push({ x: market, y: asset });
+  }
+
+  return points;
+}
+
+function fitOls(points) {
+  const n = points.length;
+  const meanX = points.reduce((a, p) => a + p.x, 0) / n;
+  const meanY = points.reduce((a, p) => a + p.y, 0) / n;
+
+  let sxy = 0;
+  let sxx = 0;
+  points.forEach((p) => {
+    sxy += (p.x - meanX) * (p.y - meanY);
+    sxx += (p.x - meanX) ** 2;
+  });
+
+  const slope = sxy / sxx;
+  const intercept = meanY - slope * meanX;
+
+  let ssr = 0;
+  let sst = 0;
+  points.forEach((p) => {
+    ssr += (p.y - (intercept + slope * p.x)) ** 2;
+    sst += (p.y - meanY) ** 2;
+  });
+
+  // Standard error of the slope: how much this estimate would move
+  // if you drew a different sample of the same size.
+  const standardError = Math.sqrt(ssr / (n - 2) / sxx);
+
+  return { slope, intercept, r2: 1 - ssr / sst, standardError };
+}
+
+function betaChartMarkup(points, fit, trueBeta, showResiduals) {
+  const width = 640;
+  const height = 300;
+  const pad = 10;
+
+  const spanX = Math.max(...points.map((p) => Math.abs(p.x))) * 1.08 || 1;
+  const spanY = Math.max(...points.map((p) => Math.abs(p.y))) * 1.08 || 1;
+
+  const toX = (v) => width / 2 + (v / spanX) * (width / 2 - pad);
+  const toY = (v) => height / 2 - (v / spanY) * (height / 2 - pad);
+
+  const lineAt = (b, a = 0) => {
+    const x1 = -spanX;
+    const x2 = spanX;
+    return `x1="${toX(x1).toFixed(1)}" y1="${toY(a + b * x1).toFixed(1)}"
+            x2="${toX(x2).toFixed(1)}" y2="${toY(a + b * x2).toFixed(1)}"`;
+  };
+
+  const residuals = showResiduals
+    ? points
+        .map((p) => {
+          const fitted = fit.intercept + fit.slope * p.x;
+          return `<line class="beta__residual" x1="${toX(p.x).toFixed(1)}"
+                  y1="${toY(p.y).toFixed(1)}" x2="${toX(p.x).toFixed(1)}"
+                  y2="${toY(fitted).toFixed(1)}"/>`;
+        })
+        .join("")
+    : "";
+
+  const dots = points
+    .map(
+      (p) =>
+        `<circle class="beta__point" cx="${toX(p.x).toFixed(1)}" cy="${toY(p.y).toFixed(1)}" r="2.6"/>`
+    )
+    .join("");
+
+  return `
+    <line class="beta__axis" x1="0" y1="${height / 2}" x2="${width}" y2="${height / 2}"/>
+    <line class="beta__axis" x1="${width / 2}" y1="0" x2="${width / 2}" y2="${height}"/>
+    ${residuals}
+    ${dots}
+    <line class="beta__true" ${lineAt(trueBeta)}/>
+    <line class="beta__fit" ${lineAt(fit.slope, fit.intercept)}/>`;
+}
+
+function initBetaModel() {
+  const chart = document.getElementById("beta-chart");
+  if (!chart) return;
+
+  const inputs = {
+    trueBeta: document.getElementById("in-beta"),
+    noise: document.getElementById("in-noise"),
+    observations: document.getElementById("in-obs"),
+  };
+  const residualsBox = document.getElementById("beta-residuals");
+  const outputs = {
+    trueBeta: document.getElementById("out-beta"),
+    noise: document.getElementById("out-noise"),
+    observations: document.getElementById("out-obs"),
+    estimate: document.getElementById("beta-hat"),
+    interval: document.getElementById("beta-interval"),
+    r2: document.getElementById("beta-r2"),
+    truth: document.getElementById("beta-truth"),
+  };
+
+  let seed = 7723109;
+  let queued = false;
+
+  function render() {
+    const assumptions = {
+      trueBeta: Number(inputs.trueBeta.value),
+      noise: Number(inputs.noise.value),
+      observations: Number(inputs.observations.value),
+    };
+
+    outputs.trueBeta.textContent = assumptions.trueBeta.toFixed(2);
+    outputs.noise.textContent = "±" + assumptions.noise + "%";
+    outputs.observations.textContent = assumptions.observations;
+
+    const points = simulateReturns(assumptions, seed);
+    const fit = fitOls(points);
+
+    chart.innerHTML = betaChartMarkup(
+      points,
+      fit,
+      assumptions.trueBeta,
+      residualsBox.checked
+    );
+
+    const margin = 1.96 * fit.standardError;
+    outputs.estimate.textContent = fit.slope.toFixed(2);
+    outputs.interval.textContent =
+      (fit.slope - margin).toFixed(2) + " to " + (fit.slope + margin).toFixed(2);
+    outputs.r2.textContent = fit.r2.toFixed(2);
+    outputs.truth.textContent = assumptions.trueBeta.toFixed(2);
+  }
+
+  function update() {
+    if (queued) return;
+    queued = true;
+    requestAnimationFrame(() => {
+      queued = false;
+      render();
+    });
+  }
+
+  Object.values(inputs).forEach((input) =>
+    input.addEventListener("input", update)
+  );
+  residualsBox.addEventListener("change", render);
+
+  const resample = document.getElementById("beta-resample");
+  if (resample) {
+    resample.addEventListener("click", () => {
+      seed = (Math.random() * 4294967296) >>> 0;
+      render();
+    });
+  }
+
+  render();
+}
+
+// ---------------------------------------------------------------
 // Collapsible nav rail
 //
 // The collapsed state is applied by the inline script in <head> so the
@@ -885,5 +1060,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initReveals();
   initSkillFills();
   initModel();
+  initBetaModel();
   initFooterDate();
 });
