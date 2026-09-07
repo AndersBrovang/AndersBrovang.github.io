@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Live models | Anders Brovang Agergaard</title>
-<meta name="description" content="An interactive DCF valuation and a Monte Carlo simulation, running in the page.">
+<meta name="description" content="An interactive DCF valuation, a Monte Carlo simulation and a live regression of beta, running in the page.">
 <link rel="canonical" href="https://andersbrovang.github.io/models.html">
 
 <meta property="og:type" content="website">
 <meta property="og:title" content="Live models | Anders Brovang Agergaard">
-<meta property="og:description" content="An interactive DCF valuation and a Monte Carlo simulation, running in the page.">
+<meta property="og:description" content="An interactive DCF valuation, a Monte Carlo simulation and a live regression of beta, running in the page.">
 <meta property="og:url" content="https://andersbrovang.github.io/models.html">
 <meta property="og:image" content="https://andersbrovang.github.io/og-image.png">
 <meta property="og:image:width" content="1200">
@@ -17,7 +17,7 @@
 <meta property="og:locale" content="en_GB">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Live models | Anders Brovang Agergaard">
-<meta name="twitter:description" content="An interactive DCF valuation and a Monte Carlo simulation, running in the page.">
+<meta name="twitter:description" content="An interactive DCF valuation, a Monte Carlo simulation and a live regression of beta, running in the page.">
 <meta name="twitter:image" content="https://andersbrovang.github.io/og-image.png">
 
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%231F6F5C'/%3E%3Ctext x='32' y='45' font-family='Georgia,serif' font-size='38' font-weight='600' text-anchor='middle' fill='%23F7F7F5'%3EA%3C/text%3E%3C/svg%3E">
@@ -40,7 +40,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=15">
+<link rel="stylesheet" href="style.css?v=17">
 </head>
 <body>
 
@@ -86,7 +86,9 @@
       <h1 class="page-head__title">Live models</h1>
       <p class="page-head__lede">
         The same maths as the
-        <a href="https://github.com/AndersBrovang/financial-modelling-dashboard" target="_blank" rel="noopener">Financial Modelling Dashboard</a>,
+        <a href="https://github.com/AndersBrovang/financial-modelling-dashboard" target="_blank" rel="noopener">Financial Modelling Dashboard</a>
+        and the
+        <a href="https://github.com/AndersBrovang/slr" target="_blank" rel="noopener">regression estimator</a>,
         rewritten in plain JavaScript so it runs in the page rather than
         needing Python installed. Nothing here is a screenshot. Every
         number is computed as you move the sliders.
@@ -209,6 +211,97 @@
       </div>
     </section>
 
+    <section class="cv-block" id="beta">
+      <h2 class="cv-block__title">Beta is a regression slope</h2>
+      <p class="model__lede">
+        An asset's beta is not a number you look up. It is the slope of
+        a regression of the asset's returns on the market's, which means
+        it is estimated from a sample and carries all the uncertainty
+        that implies. This generates returns from a beta you choose,
+        then estimates that beta back out of the data with ordinary
+        least squares. The dashed line is the truth. The solid line is
+        what the regression recovers.
+      </p>
+
+      <div class="model beta">
+        <div class="model__controls">
+          <label class="model__field">
+            <span class="model__label">
+              True beta
+              <output class="model__value mono" for="in-beta" id="out-beta"></output>
+            </span>
+            <input type="range" id="in-beta" min="0" max="2" step="0.05" value="1.2">
+          </label>
+
+          <label class="model__field">
+            <span class="model__label">
+              Asset-specific noise
+              <output class="model__value mono" for="in-noise" id="out-noise"></output>
+            </span>
+            <input type="range" id="in-noise" min="0" max="10" step="0.5" value="3">
+          </label>
+
+          <label class="model__field">
+            <span class="model__label">
+              Observations
+              <output class="model__value mono" for="in-obs" id="out-obs"></output>
+            </span>
+            <input type="range" id="in-obs" min="15" max="300" step="5" value="120">
+          </label>
+
+          <label class="beta__check">
+            <input type="checkbox" id="beta-residuals" checked>
+            <span>Show residuals</span>
+          </label>
+
+          <button type="button" class="sim__resample" id="beta-resample">
+            Resample
+          </button>
+        </div>
+
+        <figure class="model__figure">
+          <svg class="beta__chart" id="beta-chart" viewBox="0 0 640 300"
+               preserveAspectRatio="xMidYMid meet" role="img"
+               aria-label="Scatter plot of asset returns against market returns, with the fitted regression line and the true relationship drawn over it."></svg>
+          <figcaption class="beta__legend">
+            <span class="beta__key beta__key--fit">Fitted by least squares</span>
+            <span class="beta__key beta__key--true">True relationship</span>
+            <span class="beta__key beta__key--axis">Each point is one period: market return across, asset return up</span>
+          </figcaption>
+        </figure>
+      </div>
+
+      <dl class="sim__stats">
+        <div class="sim__stat">
+          <dt>True beta</dt>
+          <dd class="mono" id="beta-truth"></dd>
+        </div>
+        <div class="sim__stat sim__stat--median">
+          <dt>Estimated beta</dt>
+          <dd class="mono" id="beta-hat" aria-live="polite"></dd>
+        </div>
+        <div class="sim__stat">
+          <dt>95% interval</dt>
+          <dd class="mono" id="beta-interval"></dd>
+        </div>
+        <div class="sim__stat">
+          <dt>R²</dt>
+          <dd class="mono" id="beta-r2"></dd>
+        </div>
+      </dl>
+
+      <p class="sim__note">
+        The residuals are the vertical gaps between each point and the
+        solid line. Least squares is the line that makes the sum of
+        those gaps, squared, as small as possible. Drag the observations
+        down to twenty or push the noise up and the estimate starts
+        missing the truth by a wide margin, while the 95% interval
+        widens to admit it. That interval is the honest part: beta is an
+        estimate, and a beta quoted without a sample size behind it is
+        not telling you much.
+      </p>
+    </section>
+
     <footer class="cv-footer">
       <p>Made with <a href="https://claude.com/claude-code" target="_blank" rel="noopener">Claude Code</a>. Last updated <span class="mono" id="last-updated"></span>.</p>
     </footer>
@@ -217,6 +310,6 @@
 
 </div>
 
-<script src="script.js?v=15"></script>
+<script src="script.js?v=17"></script>
 </body>
 </html>
