@@ -94,7 +94,12 @@ a:hover{ text-decoration-color: currentColor; }
 [data-theme="dark"] .icon-moon{ display: block; }
 
 /* ---------- Site layout: nav rail + page ---------- */
-.layout{ display: grid; grid-template-columns: 224px minmax(0, 1fr); }
+.layout{
+  display: grid;
+  grid-template-columns: 224px minmax(0, 1fr);
+  transition: grid-template-columns 0.28s ease;
+}
+.nav-collapsed .layout{ grid-template-columns: 62px minmax(0, 1fr); }
 
 .site-nav{
   position: sticky;
@@ -107,12 +112,44 @@ a:hover{ text-decoration-color: currentColor; }
   flex-direction: column;
   gap: 34px;
 }
+.nav-collapsed .site-nav{ padding: 44px 14px; align-items: center; }
+.nav-collapsed .site-nav__name,
+.nav-collapsed .site-nav__list{ display: none; }
+
+.nav-toggle{
+  border: 1px solid var(--line);
+  background: var(--paper);
+  color: var(--ink-soft);
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+.nav-toggle:hover{ border-color: var(--accent); color: var(--accent); }
+.nav-toggle:focus-visible{ outline: 2px solid var(--accent); outline-offset: 2px; }
+.nav-toggle svg{ width: 14px; height: 14px; transition: transform 0.28s ease; }
+.nav-collapsed .nav-toggle svg{ transform: rotate(180deg); }
+
+.site-nav__top{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.nav-collapsed .site-nav__top{ flex-direction: column; gap: 14px; }
+
 .site-nav__brand{
   display: flex;
   align-items: center;
   gap: 11px;
   text-decoration: none;
   color: var(--ink);
+  min-width: 0;
 }
 .site-nav__mark{
   flex-shrink: 0;
@@ -810,8 +847,15 @@ a:hover{ text-decoration-color: currentColor; }
   }
   .site-nav__link:hover::before,
   .site-nav__link.is-active::before{ height: 2px; opacity: 1; }
-  .site-nav__foot{ display: none; }
   .cv{ padding: 48px 28px 56px; }
+  /* Collapsing is a desktop affordance; the bar is already compact. */
+  .nav-toggle{ display: none; }
+  .nav-collapsed .layout{ grid-template-columns: 1fr; }
+  .nav-collapsed .site-nav{ padding: 18px 20px; align-items: center; }
+  .nav-collapsed .site-nav__name,
+  .nav-collapsed .site-nav__list{ display: revert; }
+  .nav-collapsed .site-nav__list{ display: flex; }
+  .nav-collapsed .site-nav__top{ flex-direction: row; }
 }
 
 @media (max-width: 780px){
