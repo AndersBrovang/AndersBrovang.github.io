@@ -316,6 +316,72 @@ const SKILL_GROUPS = [
 // Rendering
 // ---------------------------------------------------------------
 
+// ---------------------------------------------------------------
+// Beyond the CV
+// ---------------------------------------------------------------
+
+const INTERESTS = [
+  {
+    name: "Knowledge",
+    note: "What I read about and build with when nobody is asking me to.",
+    items: ["AI", "Machine learning", "Finance"],
+  },
+  {
+    name: "Sport",
+    note: "Team sport for the people, the gym for the discipline of showing up.",
+    items: ["Football", "Basketball", "Hypertrophy training"],
+  },
+  {
+    name: "Creative",
+    note: "Where I go when I have been looking at a spreadsheet for too long.",
+    items: ["Film", "Music", "Art"],
+  },
+];
+
+// Statements about how I work, each tied to something on this site that
+// actually happened. A trait with no example behind it is just a word.
+const WORKING_STYLE = [
+  {
+    claim: "I would rather be right than fast.",
+    detail:
+      "At the Capital Region I verify equipment records, document risk assessments and complete safety checks before anything is signed off. Where a mistake has consequences, checking twice is the job rather than an overhead.",
+  },
+  {
+    claim: "I check my own work against a second method.",
+    detail:
+      "I implemented ordinary least squares two independent ways, from the covariance solution and from the matrix normal equations, and used their agreement as the correctness test. Every model on this site is validated the same way, against a result I can work out by hand.",
+    link: { label: "See the live models", url: "models.html" },
+  },
+  {
+    claim: "If a task repeats, I build the tool.",
+    detail:
+      "There was no consolidated view of load and risk across the hospital's equipment carts, so I built a Streamlit dashboard that replaced the manual spreadsheet work instead of doing the spreadsheet faster.",
+  },
+  {
+    claim: "I say when something is outside what I know.",
+    detail:
+      "I have taken whole sections off my own CV because I could not defend every line of them. A short list I can stand behind is worth more to an employer than a long one I cannot.",
+  },
+];
+
+// Self-reported, and presented as such. The axes show which side I fall
+// on, not how far: the questionnaire gives percentages, but a bar
+// implies a precision the instrument does not have.
+const MBTI = {
+  type: "INTJ-A",
+  name: "Architect, Assertive",
+  source: { label: "16personalities", url: "https://www.16personalities.com/intj-personality" },
+  note:
+    "Self-reported, and the same result every time I have taken it. I show it because people ask, not because it proves anything: this family of questionnaire is not a validated predictor of job performance, and I would not want to be hired on one. The section above is the part I would actually stand behind.",
+  axes: [
+    { letter: "I", mine: "Introverted", other: "Extraverted" },
+    { letter: "N", mine: "Intuitive", other: "Observant" },
+    { letter: "T", mine: "Thinking", other: "Feeling" },
+    { letter: "J", mine: "Judging", other: "Prospecting" },
+    { letter: "A", mine: "Assertive", other: "Turbulent" },
+  ],
+};
+
 function renderSkills() {
   const list = document.getElementById("skills-list");
   if (!list) return;
@@ -470,6 +536,65 @@ function renderSkillGroups() {
       </div>
     </section>`
   ).join("");
+}
+
+function renderInterests() {
+  const list = document.getElementById("interests");
+  if (!list) return;
+  list.innerHTML = INTERESTS.map(
+    (group) => `
+    <article class="skill-card reveal">
+      <h3 class="skill-card__name">${group.name}</h3>
+      <p class="skill-card__summary">${group.note}</p>
+      <ul class="courses__list interest__list">
+        ${group.items
+          .map((item) => `<li><span class="course">${item}</span></li>`)
+          .join("")}
+      </ul>
+    </article>`
+  ).join("");
+}
+
+function renderWorkingStyle() {
+  const list = document.getElementById("working-style");
+  if (!list) return;
+  list.innerHTML = WORKING_STYLE.map(
+    (item) => `
+    <li class="work reveal">
+      <p class="work__claim">${item.claim}</p>
+      <p class="work__detail">${item.detail}</p>
+      ${
+        item.link
+          ? `<a class="course course--link work__link" href="${item.link.url}">${item.link.label}</a>`
+          : ""
+      }
+    </li>`
+  ).join("");
+}
+
+function renderMbti() {
+  const host = document.getElementById("mbti");
+  if (!host) return;
+  host.innerHTML = `
+    <div class="mbti__head">
+      <span class="mbti__type mono">${MBTI.type}</span>
+      <span class="mbti__name">${MBTI.name}</span>
+      <a class="course course--link" href="${MBTI.source.url}" target="_blank" rel="noopener">${MBTI.source.label}</a>
+    </div>
+    <ul class="mbti__axes">
+      ${MBTI.axes
+        .map(
+          (axis) => `
+        <li class="mbti__axis reveal">
+          <span class="mbti__letter mono" aria-hidden="true">${axis.letter}</span>
+          <span class="mbti__mine">${axis.mine}</span>
+          <span class="mbti__track"><span class="mbti__fill"></span></span>
+          <span class="mbti__other">${axis.other}</span>
+        </li>`
+        )
+        .join("")}
+    </ul>
+    <p class="mbti__note">${MBTI.note}</p>`;
 }
 
 // Progressive disclosure: keep the CV scannable, but let a reader who
@@ -1053,6 +1178,9 @@ document.addEventListener("DOMContentLoaded", () => {
   renderTimelineList(EDUCATION, "education-list");
   renderProjects();
   renderSkillGroups();
+  renderInterests();
+  renderWorkingStyle();
+  renderMbti();
   initProjectToggles();
   initTheme();
   initNavToggle();
