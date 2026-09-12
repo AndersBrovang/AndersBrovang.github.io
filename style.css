@@ -919,6 +919,35 @@ a:hover{ text-decoration-color: currentColor; }
 /* Three interests, three columns: the grouping is the point, so it
    should not break into a 2 + 1 row with a hole in it. */
 .interest-grid{ grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); }
+.pick-grid{ grid-template-columns: repeat(auto-fit, minmax(178px, 1fr)); }
+.pick{
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.js .pick{
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.js .pick.is-visible{ opacity: 1; transform: translateY(0); }
+.pick__label{
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+.pick__title{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+.pick__meta{ margin: 0 0 10px; font-size: 0.75rem; color: var(--ink-soft); }
+.pick__note{ margin: 0; color: var(--ink-soft); font-size: 0.9rem; }
+
 .interest__list{ margin-top: 14px; }
 
 .work-list{ list-style: none; margin: 0; padding: 0; }
@@ -1068,6 +1097,7 @@ a:hover{ text-decoration-color: currentColor; }
   .js .project,
   .js .skill-card,
   .js .work,
+  .js .pick,
   .js .mbti__axis,
   .js .skill__row{
     opacity: 1 !important;

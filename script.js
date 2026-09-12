@@ -338,6 +338,29 @@ const INTERESTS = [
   },
 ];
 
+// Three named picks beat three category words: "Film, Music, Art" is a
+// list, a named film is a conversation.
+const PICKS = [
+  {
+    label: "Film",
+    title: "The Prestige",
+    meta: "Christopher Nolan, 2006",
+    note: "A film built like the trick it is about. The second watch is a different film from the first.",
+  },
+  {
+    label: "Album",
+    title: "UTOPIA",
+    meta: "Travis Scott, 2023",
+    note: "Dense, maximalist and meant to be loud. What I put on when I want to disappear into a task.",
+  },
+  {
+    label: "Art",
+    title: "The Starry Night",
+    meta: "Vincent van Gogh, 1889",
+    note: "Turbulence painted as something calm to look at. I have never got bored of it.",
+  },
+];
+
 // Statements about how I work, each tied to something on this site that
 // actually happened. A trait with no example behind it is just a word.
 const WORKING_STYLE = [
@@ -545,6 +568,20 @@ function renderInterests() {
           .map((item) => `<li><span class="course">${item}</span></li>`)
           .join("")}
       </ul>
+    </article>`
+  ).join("");
+}
+
+function renderPicks() {
+  const list = document.getElementById("picks");
+  if (!list) return;
+  list.innerHTML = PICKS.map(
+    (pick) => `
+    <article class="pick reveal">
+      <span class="pick__label">${pick.label}</span>
+      <h3 class="pick__title">${pick.title}</h3>
+      <p class="pick__meta mono">${pick.meta}</p>
+      <p class="pick__note">${pick.note}</p>
     </article>`
   ).join("");
 }
@@ -1179,6 +1216,7 @@ document.addEventListener("DOMContentLoaded", () => {
   renderProjects();
   renderSkillGroups();
   renderInterests();
+  renderPicks();
   renderWorkingStyle();
   renderMbti();
   initProjectToggles();
