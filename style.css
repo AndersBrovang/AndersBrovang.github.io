@@ -914,6 +914,108 @@ a:hover{ text-decoration-color: currentColor; }
 }
 
 /* ---------- Print / save as PDF ---------- */
+/* ---------- Beyond the CV ---------- */
+
+/* Three interests, three columns: the grouping is the point, so it
+   should not break into a 2 + 1 row with a hole in it. */
+.interest-grid{ grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); }
+.interest__list{ margin-top: 14px; }
+
+.work-list{ list-style: none; margin: 0; padding: 0; }
+.work + .work{
+  margin-top: 26px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+}
+.js .work{
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.js .work.is-visible{ opacity: 1; transform: translateY(0); }
+.work__claim{ margin: 0 0 7px; font-weight: 600; font-size: 1rem; }
+.work__detail{ margin: 0; color: var(--ink-soft); max-width: 68ch; }
+.work__link{ margin-top: 12px; }
+
+.mbti__head{
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.mbti__type{
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  background: var(--accent-wash);
+  border-radius: var(--radius);
+  padding: 4px 11px;
+}
+.mbti__name{ color: var(--ink-soft); font-size: 0.92rem; }
+
+.mbti__axes{ list-style: none; margin: 0; padding: 0; }
+.mbti__axis{
+  display: grid;
+  grid-template-columns: 26px minmax(86px, auto) minmax(48px, 1fr) minmax(86px, auto);
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  font-size: 0.86rem;
+}
+.js .mbti__axis{
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+.js .mbti__axis.is-visible{ opacity: 1; }
+.mbti__letter{
+  font-size: 0.74rem;
+  color: var(--accent);
+  text-align: center;
+}
+.mbti__mine{ color: var(--ink); font-weight: 500; }
+.mbti__other{ color: var(--ink-soft); }
+
+/* The track shows which side I fall on, not how far along it.
+   The questionnaire reports percentages, but a proportional bar
+   would imply a precision the instrument does not have. */
+.mbti__track{
+  display: block;
+  position: relative;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+}
+.mbti__fill{
+  display: block;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: calc(50% - 3px);
+  border-radius: 2px;
+  background: var(--accent);
+}
+
+.mbti__note{
+  margin: 24px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--line);
+  color: var(--ink-soft);
+  font-size: 0.88rem;
+  max-width: 68ch;
+}
+
+@media (max-width: 620px){
+  .mbti__axis{
+    grid-template-columns: 22px 1fr;
+    row-gap: 4px;
+  }
+  .mbti__track{ grid-column: 2; }
+  .mbti__other{ grid-column: 2; }
+}
+
 @media print{
   /* Always print on light paper, whatever the on-screen theme is. */
   :root, :root[data-theme="dark"]{
@@ -946,6 +1048,9 @@ a:hover{ text-decoration-color: currentColor; }
      reader scrolled them into view first. */
   .js .timeline__item,
   .js .project,
+  .js .skill-card,
+  .js .work,
+  .js .mbti__axis,
   .js .skill__row{
     opacity: 1 !important;
     transform: none !important;
