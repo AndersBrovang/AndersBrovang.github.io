@@ -919,6 +919,35 @@ a:hover{ text-decoration-color: currentColor; }
 /* Three interests, three columns: the grouping is the point, so it
    should not break into a 2 + 1 row with a hole in it. */
 .interest-grid{ grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); }
+.pick-grid{ grid-template-columns: repeat(auto-fit, minmax(178px, 1fr)); }
+.pick{
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+}
+.js .pick{
+  opacity: 0;
+  transform: translateY(6px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.js .pick.is-visible{ opacity: 1; transform: translateY(0); }
+.pick__label{
+  display: block;
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ink-soft);
+  margin-bottom: 8px;
+}
+.pick__title{
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: 1.05rem;
+  margin: 0 0 4px;
+  line-height: 1.2;
+}
+.pick__meta{ margin: 0 0 10px; font-size: 0.75rem; color: var(--ink-soft); }
+.pick__note{ margin: 0; color: var(--ink-soft); font-size: 0.9rem; }
+
 .interest__list{ margin-top: 14px; }
 
 .work-list{ list-style: none; margin: 0; padding: 0; }
@@ -956,35 +985,31 @@ a:hover{ text-decoration-color: currentColor; }
 .mbti__name{ color: var(--ink-soft); font-size: 0.92rem; }
 
 .mbti__axes{ list-style: none; margin: 0; padding: 0; }
-.mbti__axis{
-  display: grid;
-  grid-template-columns: 26px minmax(86px, auto) minmax(48px, 1fr) minmax(86px, auto);
-  align-items: center;
-  gap: 12px;
-  padding: 9px 0;
-  font-size: 0.86rem;
-}
+.mbti__axis{ padding: 0 0 22px; }
 .js .mbti__axis{
   opacity: 0;
   transition: opacity 0.5s ease;
 }
 .js .mbti__axis.is-visible{ opacity: 1; }
-.mbti__letter{
-  font-size: 0.74rem;
-  color: var(--accent);
-  text-align: center;
-}
-.mbti__mine{ color: var(--ink); font-weight: 500; }
-.mbti__other{ color: var(--ink-soft); }
 
-/* The track shows which side I fall on, not how far along it.
-   The questionnaire reports percentages, but a proportional bar
-   would imply a precision the instrument does not have. */
+.mbti__value{
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin: 0 0 9px;
+  font-size: 0.95rem;
+}
+.mbti__letter{ font-size: 0.74rem; color: var(--accent); }
+.mbti__pct{ font-weight: 500; color: var(--ink); }
+.mbti__mine{ color: var(--ink); font-weight: 500; }
+
+/* The percentages come straight from the questionnaire, so the bar
+   reports them rather than inventing a position. */
 .mbti__track{
   display: block;
   position: relative;
-  height: 4px;
-  border-radius: 2px;
+  height: 5px;
+  border-radius: 3px;
   background: var(--line);
 }
 .mbti__fill{
@@ -993,9 +1018,31 @@ a:hover{ text-decoration-color: currentColor; }
   top: 0;
   bottom: 0;
   left: 0;
-  width: calc(50% - 3px);
-  border-radius: 2px;
+  border-radius: 3px;
   background: var(--accent);
+}
+.mbti__dot{
+  display: block;
+  position: absolute;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  margin-left: -5.5px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--paper);
+  transform: translateY(-50%);
+}
+/* Only the opposite trait is labelled. Naming both ends would make the
+   bar read as a spectrum, in which case a fill of 66% from the left
+   would mean 66% toward the pole on the right, the opposite of what
+   the questionnaire reports. It is a meter for the named trait. */
+.mbti__poles{
+  display: flex;
+  justify-content: flex-end;
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
 }
 
 .mbti__note{
@@ -1050,6 +1097,7 @@ a:hover{ text-decoration-color: currentColor; }
   .js .project,
   .js .skill-card,
   .js .work,
+  .js .pick,
   .js .mbti__axis,
   .js .skill__row{
     opacity: 1 !important;
