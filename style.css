@@ -1003,8 +1003,10 @@ a:hover{ text-decoration-color: currentColor; }
 .mbti__pct{ font-weight: 500; color: var(--ink); }
 .mbti__mine{ color: var(--ink); font-weight: 500; }
 
-/* The percentages come straight from the questionnaire, so the bar
-   reports them rather than inventing a position. */
+/* A spectrum between two labelled poles, not a meter. 50% is no
+   preference, so the bar grows out of the centre: its length is how
+   far the answer leans, which is the part worth seeing. Putting the
+   named trait on the right keeps the direction honest. */
 .mbti__track{
   display: block;
   position: relative;
@@ -1012,12 +1014,21 @@ a:hover{ text-decoration-color: currentColor; }
   border-radius: 3px;
   background: var(--line);
 }
+.mbti__mid{
+  display: block;
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  left: 50%;
+  width: 1px;
+  background: var(--ink-soft);
+  opacity: 0.55;
+}
 .mbti__fill{
   display: block;
   position: absolute;
   top: 0;
   bottom: 0;
-  left: 0;
   border-radius: 3px;
   background: var(--accent);
 }
@@ -1033,13 +1044,10 @@ a:hover{ text-decoration-color: currentColor; }
   background: var(--paper);
   transform: translateY(-50%);
 }
-/* Only the opposite trait is labelled. Naming both ends would make the
-   bar read as a spectrum, in which case a fill of 66% from the left
-   would mean 66% toward the pole on the right, the opposite of what
-   the questionnaire reports. It is a meter for the named trait. */
 .mbti__poles{
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
+  gap: 12px;
   margin: 8px 0 0;
   font-size: 0.8rem;
   color: var(--ink-soft);
