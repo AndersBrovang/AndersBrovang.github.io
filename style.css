@@ -1004,9 +1004,10 @@ a:hover{ text-decoration-color: currentColor; }
 .mbti__mine{ color: var(--ink); font-weight: 500; }
 
 /* A spectrum between two labelled poles, not a meter. 50% is no
-   preference, so the bar grows out of the centre: its length is how
-   far the answer leans, which is the part worth seeing. Putting the
-   named trait on the right keeps the direction honest. */
+   preference, so the bar grows out of the centre and its length is how
+   far the answer leans. The named trait is on the left and the marker
+   sits at (100 - pct), so a stronger score pulls the marker toward its
+   own trait, which is the direction the questionnaire draws it. */
 .mbti__track{
   display: block;
   position: relative;
