@@ -956,35 +956,31 @@ a:hover{ text-decoration-color: currentColor; }
 .mbti__name{ color: var(--ink-soft); font-size: 0.92rem; }
 
 .mbti__axes{ list-style: none; margin: 0; padding: 0; }
-.mbti__axis{
-  display: grid;
-  grid-template-columns: 26px minmax(86px, auto) minmax(48px, 1fr) minmax(86px, auto);
-  align-items: center;
-  gap: 12px;
-  padding: 9px 0;
-  font-size: 0.86rem;
-}
+.mbti__axis{ padding: 0 0 22px; }
 .js .mbti__axis{
   opacity: 0;
   transition: opacity 0.5s ease;
 }
 .js .mbti__axis.is-visible{ opacity: 1; }
-.mbti__letter{
-  font-size: 0.74rem;
-  color: var(--accent);
-  text-align: center;
-}
-.mbti__mine{ color: var(--ink); font-weight: 500; }
-.mbti__other{ color: var(--ink-soft); }
 
-/* The track shows which side I fall on, not how far along it.
-   The questionnaire reports percentages, but a proportional bar
-   would imply a precision the instrument does not have. */
+.mbti__value{
+  display: flex;
+  align-items: baseline;
+  gap: 9px;
+  margin: 0 0 9px;
+  font-size: 0.95rem;
+}
+.mbti__letter{ font-size: 0.74rem; color: var(--accent); }
+.mbti__pct{ font-weight: 500; color: var(--ink); }
+.mbti__mine{ color: var(--ink); font-weight: 500; }
+
+/* The percentages come straight from the questionnaire, so the bar
+   reports them rather than inventing a position. */
 .mbti__track{
   display: block;
   position: relative;
-  height: 4px;
-  border-radius: 2px;
+  height: 5px;
+  border-radius: 3px;
   background: var(--line);
 }
 .mbti__fill{
@@ -993,9 +989,31 @@ a:hover{ text-decoration-color: currentColor; }
   top: 0;
   bottom: 0;
   left: 0;
-  width: calc(50% - 3px);
-  border-radius: 2px;
+  border-radius: 3px;
   background: var(--accent);
+}
+.mbti__dot{
+  display: block;
+  position: absolute;
+  top: 50%;
+  width: 11px;
+  height: 11px;
+  margin-left: -5.5px;
+  border-radius: 50%;
+  border: 2px solid var(--accent);
+  background: var(--paper);
+  transform: translateY(-50%);
+}
+/* Only the opposite trait is labelled. Naming both ends would make the
+   bar read as a spectrum, in which case a fill of 66% from the left
+   would mean 66% toward the pole on the right, the opposite of what
+   the questionnaire reports. It is a meter for the named trait. */
+.mbti__poles{
+  display: flex;
+  justify-content: flex-end;
+  margin: 8px 0 0;
+  font-size: 0.8rem;
+  color: var(--ink-soft);
 }
 
 .mbti__note{

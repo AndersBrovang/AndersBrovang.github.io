@@ -347,12 +347,6 @@ const WORKING_STYLE = [
       "At the Capital Region I verify equipment records, document risk assessments and complete safety checks before anything is signed off. Where a mistake has consequences, checking twice is the job rather than an overhead.",
   },
   {
-    claim: "I check my own work against a second method.",
-    detail:
-      "I implemented ordinary least squares two independent ways, from the covariance solution and from the matrix normal equations, and used their agreement as the correctness test. Every model on this site is validated the same way, against a result I can work out by hand.",
-    link: { label: "See the live models", url: "models.html" },
-  },
-  {
     claim: "If a task repeats, I build the tool.",
     detail:
       "There was no consolidated view of load and risk across the hospital's equipment carts, so I built a Streamlit dashboard that replaced the manual spreadsheet work instead of doing the spreadsheet faster.",
@@ -364,21 +358,21 @@ const WORKING_STYLE = [
   },
 ];
 
-// Self-reported, and presented as such. The axes show which side I fall
-// on, not how far: the questionnaire gives percentages, but a bar
-// implies a precision the instrument does not have.
+// Self-reported, and presented as such. The percentages are the ones
+// the questionnaire itself reports; they are not a measurement of
+// anything, which is what the note below says out loud.
 const MBTI = {
   type: "INTJ-A",
   name: "Architect, Assertive",
   source: { label: "16personalities", url: "https://www.16personalities.com/intj-personality" },
   note:
-    "Self-reported, and the same result every time I have taken it. I show it because people ask, not because it proves anything: this family of questionnaire is not a validated predictor of job performance, and I would not want to be hired on one. The section above is the part I would actually stand behind.",
+    "Self-reported, and the same result every time I have taken it. The percentages are what the questionnaire reports, not a measurement of anything. I show it because people ask, not because it proves something: this family of test is not a validated predictor of job performance, and I would not want to be hired on one. The section above is the part I would actually stand behind.",
   axes: [
-    { letter: "I", mine: "Introverted", other: "Extraverted" },
-    { letter: "N", mine: "Intuitive", other: "Observant" },
-    { letter: "T", mine: "Thinking", other: "Feeling" },
-    { letter: "J", mine: "Judging", other: "Prospecting" },
-    { letter: "A", mine: "Assertive", other: "Turbulent" },
+    { letter: "I", mine: "Introverted", other: "Extraverted", pct: 66 },
+    { letter: "N", mine: "Intuitive", other: "Observant", pct: 71 },
+    { letter: "T", mine: "Thinking", other: "Feeling", pct: 79 },
+    { letter: "J", mine: "Judging", other: "Prospecting", pct: 72 },
+    { letter: "A", mine: "Assertive", other: "Turbulent", pct: 67 },
   ],
 };
 
@@ -586,10 +580,16 @@ function renderMbti() {
         .map(
           (axis) => `
         <li class="mbti__axis reveal">
-          <span class="mbti__letter mono" aria-hidden="true">${axis.letter}</span>
-          <span class="mbti__mine">${axis.mine}</span>
-          <span class="mbti__track"><span class="mbti__fill"></span></span>
-          <span class="mbti__other">${axis.other}</span>
+          <p class="mbti__value">
+            <span class="mbti__letter mono" aria-hidden="true">${axis.letter}</span>
+            <span class="mbti__pct mono">${axis.pct}%</span>
+            <span class="mbti__mine">${axis.mine}</span>
+          </p>
+          <span class="mbti__track">
+            <span class="mbti__fill" style="width:${axis.pct}%"></span>
+            <span class="mbti__dot" style="left:${axis.pct}%"></span>
+          </span>
+          <p class="mbti__poles"><span>${axis.other}</span></p>
         </li>`
         )
         .join("")}
