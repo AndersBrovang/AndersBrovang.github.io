@@ -384,9 +384,12 @@ const WORKING_STYLE = [
 // Self-reported, and presented as such. The percentages are the ones
 // the questionnaire itself reports; they are not a measurement of
 // anything, which is what the note below says out loud.
+//
+// `pct` is read the way the test states it: 66 means 66 of 100 toward
+// `mine`, so 50 is no preference either way.
 const MBTI = {
   type: "INTJ-A",
-  name: "Architect, Assertive",
+  name: "Architect",
   source: { label: "16personalities", url: "https://www.16personalities.com/intj-personality" },
   note:
     "Self-reported, and the same result every time I have taken it. The percentages are what the questionnaire reports, not a measurement of anything. I show it because people ask, not because it proves something: this family of test is not a validated predictor of job performance, and I would not want to be hired on one. The section above is the part I would actually stand behind.",
@@ -623,10 +626,14 @@ function renderMbti() {
             <span class="mbti__mine">${axis.mine}</span>
           </p>
           <span class="mbti__track">
-            <span class="mbti__fill" style="width:${axis.pct}%"></span>
+            <span class="mbti__mid" aria-hidden="true"></span>
+            <span class="mbti__fill" style="left:50%;width:${axis.pct - 50}%"></span>
             <span class="mbti__dot" style="left:${axis.pct}%"></span>
           </span>
-          <p class="mbti__poles"><span>${axis.other}</span></p>
+          <p class="mbti__poles">
+            <span>${axis.other}</span>
+            <span>${axis.mine}</span>
+          </p>
         </li>`
         )
         .join("")}
