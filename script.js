@@ -386,7 +386,10 @@ const WORKING_STYLE = [
 // anything, which is what the note below says out loud.
 //
 // `pct` is read the way the test states it: 66 means 66 of 100 toward
-// `mine`, so 50 is no preference either way.
+// `mine`, so 50 is no preference either way. `mine` is drawn on the
+// left, which puts the marker at (100 - pct) along the track: the
+// stronger the score, the closer the marker sits to its own trait.
+// 100% would land exactly on the pole.
 const MBTI = {
   type: "INTJ-A",
   name: "Architect",
@@ -617,8 +620,9 @@ function renderMbti() {
     </div>
     <ul class="mbti__axes">
       ${MBTI.axes
-        .map(
-          (axis) => `
+        .map((axis) => {
+          const marker = 100 - axis.pct; // distance from its own pole
+          return `
         <li class="mbti__axis reveal">
           <p class="mbti__value">
             <span class="mbti__letter mono" aria-hidden="true">${axis.letter}</span>
@@ -627,15 +631,15 @@ function renderMbti() {
           </p>
           <span class="mbti__track">
             <span class="mbti__mid" aria-hidden="true"></span>
-            <span class="mbti__fill" style="left:50%;width:${axis.pct - 50}%"></span>
-            <span class="mbti__dot" style="left:${axis.pct}%"></span>
+            <span class="mbti__fill" style="left:${marker}%;width:${50 - marker}%"></span>
+            <span class="mbti__dot" style="left:${marker}%"></span>
           </span>
           <p class="mbti__poles">
-            <span>${axis.other}</span>
             <span>${axis.mine}</span>
+            <span>${axis.other}</span>
           </p>
-        </li>`
-        )
+        </li>`;
+        })
         .join("")}
     </ul>
     <p class="mbti__note">${MBTI.note}</p>`;
